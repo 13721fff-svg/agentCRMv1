@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { FileText, DollarSign, Calendar } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import ClientSelector from '@/components/ClientSelector';
 
 export default function CreateOrderScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const params = useLocalSearchParams<{ clientId?: string; clientName?: string }>();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
+  const [clientId, setClientId] = useState<string | undefined>(params.clientId);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (params.clientId) {
+      setClientId(params.clientId);
+    }
+  }, [params.clientId]);
 
   const handleSave = async () => {
     if (!title) {
@@ -38,6 +47,19 @@ export default function CreateOrderScreen() {
       <Header title={t('orders.addOrder')} showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>
+        {params.clientName && (
+          <View style={tw`bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4`}>
+            <Text style={tw`text-sm font-medium text-blue-900`}>
+              Замовлення для: {params.clientName}
+            </Text>
+          </View>
+        )}
+
+        <ClientSelector
+          selectedClientId={clientId || null}
+          onClientChange={(id) => setClientId(id || undefined)}
+        />
+
         <Input
           label="Назва"
           value={title}
