@@ -1,0 +1,152 @@
+{
+  "app": {
+    "name": "AgentCRM",
+    "tagline": "Все для бізнесу в одному додатку"
+  },
+  "common": {
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "create": "Створити",
+    "search": "Пошук",
+    "filter": "Фільтр",
+    "back": "Назад",
+    "next": "Далі",
+    "done": "Готово",
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "success": "Успішно",
+    "yes": "Так",
+    "no": "Ні",
+    "confirm": "Підтвердити",
+    "close": "Закрити"
+  },
+  "auth": {
+    "login": "Вхід",
+    "register": "Реєстрація",
+    "email": "Email",
+    "password": "Пароль",
+    "confirmPassword": "Підтвердити пароль",
+    "fullName": "Повне ім'я",
+    "phone": "Телефон",
+    "forgotPassword": "Забули пароль?",
+    "dontHaveAccount": "Немає акаунту?",
+    "alreadyHaveAccount": "Вже є акаунт?",
+    "signIn": "Увійти",
+    "signUp": "Зареєструватись",
+    "logout": "Вийти"
+  },
+  "onboarding": {
+    "welcome": "Ласкаво просимо",
+    "selectRole": "Виберіть вашу роль",
+    "citizen": "Користувач",
+    "citizenDesc": "Шукаю послуги та майстрів",
+    "individual": "Індивідуальний підприємець",
+    "individualDesc": "Надаю послуги самостійно",
+    "small": "Малий бізнес",
+    "smallDesc": "Команда до 10 осіб",
+    "medium": "Середній бізнес",
+    "mediumDesc": "Команда до 50 осіб"
+  },
+  "tabs": {
+    "home": "Головна",
+    "catalog": "Каталог",
+    "orders": "Замовлення",
+    "clients": "Клієнти",
+    "team": "Команда",
+    "analytics": "Аналітика",
+    "more": "Ще"
+  },
+  "home": {
+    "title": "Головна",
+    "quickActions": "Швидкі дії",
+    "recentOrders": "Останні замовлення",
+    "recentClients": "Останні клієнти",
+    "reminders": "Нагадування",
+    "stats": "Статистика"
+  },
+  "clients": {
+    "title": "Клієнти",
+    "addClient": "Додати клієнта",
+    "clientDetails": "Деталі клієнта",
+    "name": "Ім'я",
+    "email": "Email",
+    "phone": "Телефон",
+    "address": "Адреса",
+    "notes": "Нотатки",
+    "rating": "Рейтинг",
+    "tags": "Теги",
+    "orderHistory": "Історія замовлень"
+  },
+  "orders": {
+    "title": "Замовлення",
+    "addOrder": "Створити замовлення",
+    "orderDetails": "Деталі замовлення",
+    "status": "Статус",
+    "draft": "Чернетка",
+    "pending": "Очікує",
+    "confirmed": "Підтверджено",
+    "inProgress": "В роботі",
+    "completed": "Завершено",
+    "cancelled": "Скасовано",
+    "amount": "Сума",
+    "dueDate": "Термін",
+    "assignedTo": "Виконавець",
+    "description": "Опис"
+  },
+  "team": {
+    "title": "Команда",
+    "addMember": "Додати члена",
+    "members": "Учасники",
+    "roles": "Ролі",
+    "owner": "Власник",
+    "admin": "Адміністратор",
+    "manager": "Менеджер",
+    "staff": "Співробітник",
+    "viewer": "Спостерігач"
+  },
+  "campaigns": {
+    "title": "Кампанії",
+    "addCampaign": "Створити кампанію",
+    "type": "Тип",
+    "push": "Push-повідомлення",
+    "email": "Email",
+    "sms": "SMS",
+    "banner": "Банер",
+    "targetAudience": "Цільова аудиторія",
+    "startDate": "Дата початку",
+    "endDate": "Дата завершення"
+  },
+  "analytics": {
+    "title": "Аналітика",
+    "dashboard": "Дашборд",
+    "kpi": "KPI",
+    "reports": "Звіти",
+    "export": "Експорт"
+  },
+  "profile": {
+    "title": "Профіль",
+    "settings": "Налаштування",
+    "language": "Мова",
+    "theme": "Тема",
+    "light": "Світла",
+    "dark": "Темна",
+    "subscription": "Підписка",
+    "notifications": "Сповіщення"
+  },
+  "catalog": {
+    "title": "Каталог",
+    "categories": "Категорії",
+    "providers": "Виконавці",
+    "services": "Послуги",
+    "searchServices": "Шукати послуги"
+  },
+  "requests": {
+    "title": "Заявки",
+    "createRequest": "Створити заявку",
+    "myPrice": "Моя ціна",
+    "budget": "Бюджет",
+    "location": "Локація"
+  }
+}

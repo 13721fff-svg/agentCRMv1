@@ -1,0 +1,152 @@
+{
+  "app": {
+    "name": "AgentCRM",
+    "tagline": "Everything for business in one app"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "phone": "Phone",
+    "forgotPassword": "Forgot Password?",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "logout": "Logout"
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "selectRole": "Select your role",
+    "citizen": "User",
+    "citizenDesc": "Looking for services and specialists",
+    "individual": "Individual Business",
+    "individualDesc": "Providing services independently",
+    "small": "Small Business",
+    "smallDesc": "Team up to 10 people",
+    "medium": "Medium Business",
+    "mediumDesc": "Team up to 50 people"
+  },
+  "tabs": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "orders": "Orders",
+    "clients": "Clients",
+    "team": "Team",
+    "analytics": "Analytics",
+    "more": "More"
+  },
+  "home": {
+    "title": "Home",
+    "quickActions": "Quick Actions",
+    "recentOrders": "Recent Orders",
+    "recentClients": "Recent Clients",
+    "reminders": "Reminders",
+    "stats": "Statistics"
+  },
+  "clients": {
+    "title": "Clients",
+    "addClient": "Add Client",
+    "clientDetails": "Client Details",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "notes": "Notes",
+    "rating": "Rating",
+    "tags": "Tags",
+    "orderHistory": "Order History"
+  },
+  "orders": {
+    "title": "Orders",
+    "addOrder": "Create Order",
+    "orderDetails": "Order Details",
+    "status": "Status",
+    "draft": "Draft",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "amount": "Amount",
+    "dueDate": "Due Date",
+    "assignedTo": "Assigned To",
+    "description": "Description"
+  },
+  "team": {
+    "title": "Team",
+    "addMember": "Add Member",
+    "members": "Members",
+    "roles": "Roles",
+    "owner": "Owner",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "staff": "Staff",
+    "viewer": "Viewer"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "addCampaign": "Create Campaign",
+    "type": "Type",
+    "push": "Push Notifications",
+    "email": "Email",
+    "sms": "SMS",
+    "banner": "Banner",
+    "targetAudience": "Target Audience",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "dashboard": "Dashboard",
+    "kpi": "KPI",
+    "reports": "Reports",
+    "export": "Export"
+  },
+  "profile": {
+    "title": "Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "subscription": "Subscription",
+    "notifications": "Notifications"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "categories": "Categories",
+    "providers": "Providers",
+    "services": "Services",
+    "searchServices": "Search Services"
+  },
+  "requests": {
+    "title": "Requests",
+    "createRequest": "Create Request",
+    "myPrice": "My Price",
+    "budget": "Budget",
+    "location": "Location"
+  }
+}
