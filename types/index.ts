@@ -6,7 +6,7 @@ export type OrderStatus = 'draft' | 'pending' | 'confirmed' | 'in_progress' | 'c
 
 export type RequestStatus = 'open' | 'quoted' | 'accepted' | 'rejected' | 'expired';
 
-export type CampaignStatus = 'draft' | 'scheduled' | 'active' | 'paused' | 'completed';
+export type CampaignStatus = 'draft' | 'scheduled' | 'active' | 'paused' | 'completed' | 'cancelled';
 
 export interface User {
   id: string;

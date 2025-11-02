@@ -6,11 +6,12 @@ import tw from '@/lib/tw';
 
 interface DateTimePickerComponentProps {
   label: string;
-  value: Date;
-  onChange: (date: Date) => void;
+  value: Date | null;
+  onChange: (date: Date | null) => void;
   mode?: 'date' | 'time' | 'datetime';
   minimumDate?: Date;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 export default function DateTimePickerComponent({
@@ -20,9 +21,10 @@ export default function DateTimePickerComponent({
   mode = 'datetime',
   minimumDate,
   disabled = false,
+  placeholder = 'Виберіть дату',
 }: DateTimePickerComponentProps) {
   const [showPicker, setShowPicker] = useState(false);
-  const [tempDate, setTempDate] = useState(value);
+  const [tempDate, setTempDate] = useState(value || new Date());
 
   const formatDate = (date: Date): string => {
     if (mode === 'time') {
@@ -66,7 +68,7 @@ export default function DateTimePickerComponent({
   };
 
   const handleCancel = () => {
-    setTempDate(value);
+    setTempDate(value || new Date());
     setShowPicker(false);
   };
 
@@ -82,12 +84,15 @@ export default function DateTimePickerComponent({
           )}
           <input
             type={mode === 'time' ? 'time' : mode === 'date' ? 'date' : 'datetime-local'}
+            placeholder={placeholder}
             value={
-              mode === 'time'
-                ? value.toTimeString().slice(0, 5)
-                : mode === 'date'
-                ? value.toISOString().slice(0, 10)
-                : value.toISOString().slice(0, 16)
+              value
+                ? mode === 'time'
+                  ? value.toTimeString().slice(0, 5)
+                  : mode === 'date'
+                  ? value.toISOString().slice(0, 10)
+                  : value.toISOString().slice(0, 16)
+                : ''
             }
             onChange={(e) => {
               const newDate = new Date(e.target.value);
@@ -125,7 +130,9 @@ export default function DateTimePickerComponent({
         ) : (
           <Calendar size={20} color="#737373" style={tw`mr-2`} />
         )}
-        <Text style={tw`text-base text-gray-900 flex-1`}>{formatDate(value)}</Text>
+        <Text style={tw`text-base ${value ? 'text-gray-900' : 'text-gray-500'} flex-1`}>
+          {value ? formatDate(value) : placeholder}
+        </Text>
       </TouchableOpacity>
 
       {showPicker && (

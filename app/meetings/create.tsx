@@ -128,7 +128,7 @@ export default function CreateMeetingScreen() {
         <DateTimePickerComponent
           label="Дата та час початку *"
           value={startTime}
-          onChange={setStartTime}
+          onChange={(date) => date && setStartTime(date)}
           mode="datetime"
           minimumDate={new Date()}
         />
@@ -136,7 +136,7 @@ export default function CreateMeetingScreen() {
         <DateTimePickerComponent
           label="Дата та час закінчення *"
           value={endTime}
-          onChange={setEndTime}
+          onChange={(date) => date && setEndTime(date)}
           mode="datetime"
           minimumDate={startTime}
         />
