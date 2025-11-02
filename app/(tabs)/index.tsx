@@ -239,7 +239,7 @@ export default function DashboardScreen() {
         title: 'Завдання',
         icon: <CheckSquare size={24} color="#06b6d4" />,
         color: '#06b6d4',
-        onPress: () => router.push('/kpi'),
+        onPress: () => router.push('/tasks'),
         roles: ['individual', 'small', 'medium'],
       },
     ];
