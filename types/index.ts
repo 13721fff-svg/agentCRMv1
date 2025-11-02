@@ -125,6 +125,8 @@ export interface Task {
   updated_at: string;
 }
 
+export type MeetingStatus = 'scheduled' | 'completed' | 'cancelled';
+
 export interface Meeting {
   id: string;
   org_id: string;
@@ -132,9 +134,12 @@ export interface Meeting {
   description?: string;
   client_id?: string;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   start_time: string;
   end_time: string;
   participants: string[];
+  status: MeetingStatus;
   notes?: string;
   created_by: string;
   created_at: string;

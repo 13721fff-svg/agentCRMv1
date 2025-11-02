@@ -10,6 +10,7 @@ interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
+  style?: any;
 }
 
 export default function Button({
@@ -20,6 +21,7 @@ export default function Button({
   disabled = false,
   loading = false,
   fullWidth = false,
+  style,
 }: ButtonProps) {
   const getVariantStyles = () => {
     switch (variant) {
@@ -57,9 +59,9 @@ export default function Button({
 
   return (
     <TouchableOpacity
-      style={tw`${getVariantStyles()} ${getSizeStyles()} rounded-lg items-center justify-center ${
+      style={[tw`${getVariantStyles()} ${getSizeStyles()} rounded-lg items-center justify-center ${
         fullWidth ? 'w-full' : ''
-      } ${disabled || loading ? 'opacity-50' : ''}`}
+      } ${disabled || loading ? 'opacity-50' : ''}`, style]}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.7}
