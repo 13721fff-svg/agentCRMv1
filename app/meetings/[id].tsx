@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Trash2, Calendar, Clock, MapPin, FileText, CheckCircle, XCircle } from 'lucide-react-native';
+import { ArrowLeft, Trash2, Calendar, Clock, MapPin, FileText, CheckCircle, XCircle, Edit2, User, Users } from 'lucide-react-native';
 import { useMeetingsStore } from '@/store/meetingsStore';
 import { supabase } from '@/lib/supabase';
 import tw from '@/lib/tw';
@@ -17,6 +17,8 @@ export default function MeetingDetailsScreen() {
   const insets = useSafeAreaInsets();
   const [meeting, setMeeting] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [clientName, setClientName] = useState<string | null>(null);
+  const [participantsNames, setParticipantsNames] = useState<string[]>([]);
   const { deleteMeeting, updateMeeting } = useMeetingsStore();
 
   useEffect(() => {
@@ -33,6 +35,25 @@ export default function MeetingDetailsScreen() {
 
       if (error) throw error;
       setMeeting(data);
+
+      if (data?.client_id) {
+        const { data: client } = await supabase
+          .from('clients')
+          .select('full_name')
+          .eq('id', data.client_id)
+          .maybeSingle();
+
+        if (client) setClientName(client.full_name);
+      }
+
+      if (data?.participants && data.participants.length > 0) {
+        const { data: users } = await supabase
+          .from('users')
+          .select('full_name')
+          .in('id', data.participants);
+
+        if (users) setParticipantsNames(users.map((u) => u.full_name));
+      }
     } catch (error) {
       console.error('Error loading meeting:', error);
     } finally {
@@ -153,9 +174,16 @@ export default function MeetingDetailsScreen() {
             Зустріч
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleDelete}>
-          <Trash2 size={20} color="#ef4444" />
-        </TouchableOpacity>
+        <View style={tw`flex-row gap-3`}>
+          {meeting.status === 'scheduled' && (
+            <TouchableOpacity onPress={() => router.push(`/meetings/edit/${id}`)}>
+              <Edit2 size={20} color="#0284c7" />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={handleDelete}>
+            <Trash2 size={20} color="#ef4444" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={tw`flex-1`} contentContainerStyle={tw`p-4 pb-24`}>
@@ -199,11 +227,37 @@ export default function MeetingDetailsScreen() {
             </View>
 
             {meeting.location && (
-              <View style={tw`flex-row items-start`}>
+              <View style={tw`flex-row items-start mb-3`}>
                 <MapPin size={20} color="#ef4444" style={tw`mr-3 mt-1`} />
                 <View style={tw`flex-1`}>
                   <Text style={tw`text-xs text-gray-500 mb-1`}>Локація</Text>
                   <Text style={tw`text-base text-gray-900`}>{meeting.location}</Text>
+                </View>
+              </View>
+            )}
+
+            {clientName && (
+              <View style={tw`flex-row items-start mb-3`}>
+                <User size={20} color="#8b5cf6" style={tw`mr-3 mt-1`} />
+                <View style={tw`flex-1`}>
+                  <Text style={tw`text-xs text-gray-500 mb-1`}>Клієнт</Text>
+                  <Text style={tw`text-base text-gray-900`}>{clientName}</Text>
+                </View>
+              </View>
+            )}
+
+            {participantsNames.length > 0 && (
+              <View style={tw`flex-row items-start`}>
+                <Users size={20} color="#0284c7" style={tw`mr-3 mt-1`} />
+                <View style={tw`flex-1`}>
+                  <Text style={tw`text-xs text-gray-500 mb-1`}>
+                    Учасники ({participantsNames.length})
+                  </Text>
+                  {participantsNames.map((name, index) => (
+                    <Text key={index} style={tw`text-base text-gray-900`}>
+                      • {name}
+                    </Text>
+                  ))}
                 </View>
               </View>
             )}

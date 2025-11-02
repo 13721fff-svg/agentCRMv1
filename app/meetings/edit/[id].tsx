@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Text, Alert, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Calendar, Clock, MapPin, FileText, Map as MapIcon, Users } from 'lucide-react-native';
+import { Calendar, MapPin, FileText, Map as MapIcon } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import Input from '@/components/Input';
@@ -10,18 +10,16 @@ import DateTimePickerComponent from '@/components/DateTimePicker';
 import ParticipantsSelector from '@/components/ParticipantsSelector';
 import ClientSelector from '@/components/ClientSelector';
 import { useMeetingsStore } from '@/store/meetingsStore';
-import { useAuthStore } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
 
-export default function CreateMeetingScreen() {
+export default function EditMeetingScreen() {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const addMeeting = useMeetingsStore((state) => state.addMeeting);
-  const params = useLocalSearchParams<{
-    latitude?: string;
-    longitude?: string;
-    address?: string;
-  }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const updateMeeting = useMeetingsStore((state) => state.updateMeeting);
+
+  const [meeting, setMeeting] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -29,20 +27,43 @@ export default function CreateMeetingScreen() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date(Date.now() + 60 * 60 * 1000));
+  const [endTime, setEndTime] = useState(new Date());
   const [participants, setParticipants] = useState<string[]>([]);
   const [clientId, setClientId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (params.latitude && params.longitude) {
-      setLatitude(parseFloat(params.latitude));
-      setLongitude(parseFloat(params.longitude));
-      if (params.address) {
-        setLocation(params.address);
+    loadMeeting();
+  }, [id]);
+
+  const loadMeeting = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('meetings')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setMeeting(data);
+        setTitle(data.title);
+        setDescription(data.description || '');
+        setLocation(data.location || '');
+        setLatitude(data.latitude);
+        setLongitude(data.longitude);
+        setStartTime(new Date(data.start_time));
+        setEndTime(new Date(data.end_time));
+        setParticipants(data.participants || []);
+        setClientId(data.client_id);
       }
+    } catch (error) {
+      console.error('Error loading meeting:', error);
+      Alert.alert('Помилка', 'Не вдалося завантажити зустріч');
+    } finally {
+      setLoading(false);
     }
-  }, [params]);
+  };
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -56,55 +77,74 @@ export default function CreateMeetingScreen() {
     }
 
     try {
-      setLoading(true);
+      setSaving(true);
 
-      const meetingData = {
-        org_id: user?.org_id,
+      const updates: Partial<any> = {
         title: title.trim(),
-        description: description.trim() || null,
-        location: location.trim() || null,
+        description: description.trim() || undefined,
+        location: location.trim() || undefined,
         latitude,
         longitude,
         start_time: startTime.toISOString(),
         end_time: endTime.toISOString(),
-        status: 'scheduled',
         participants,
         client_id: clientId,
-        created_by: user?.id,
+        updated_at: new Date().toISOString(),
       };
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('meetings')
-        .insert([meetingData])
-        .select()
-        .single();
+        .update(updates)
+        .eq('id', id);
 
       if (error) throw error;
 
-      addMeeting(data);
+      updateMeeting(id, updates);
 
-      Alert.alert('Успіх', 'Зустріч створено!', [
+      Alert.alert('Успіх', 'Зустріч оновлено!', [
         {
           text: 'OK',
           onPress: () => {
-            router.replace('/meetings');
+            router.back();
           },
         },
       ]);
     } catch (error) {
-      console.error('Error creating meeting:', error);
-      Alert.alert('Помилка', 'Не вдалося створити зустріч');
+      console.error('Error updating meeting:', error);
+      Alert.alert('Помилка', 'Не вдалося оновити зустріч');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={tw`flex-1 bg-white`}>
+        <Header title="Редагувати зустріч" showBack />
+        <View style={tw`flex-1 items-center justify-center`}>
+          <ActivityIndicator size="large" color="#0284c7" />
+        </View>
+      </View>
+    );
+  }
+
+  if (!meeting) {
+    return (
+      <View style={tw`flex-1 bg-white`}>
+        <Header title="Редагувати зустріч" showBack />
+        <View style={tw`flex-1 items-center justify-center`}>
+          <Text style={tw`text-gray-500`}>Зустріч не знайдено</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
       style={tw`flex-1 bg-white`}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Header title="Створити зустріч" showBack />
+      <Header title="Редагувати зустріч" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4 pb-24`}>
         <Input
@@ -156,7 +196,7 @@ export default function CreateMeetingScreen() {
             Локація
           </Text>
           <TouchableOpacity
-            onPress={() => router.push('/map/picker?returnTo=/meetings/create')}
+            onPress={() => router.push(`/map/picker?returnTo=/meetings/edit/${id}`)}
             style={tw`flex-row items-center justify-between border border-gray-300 rounded-lg px-4 py-3 bg-white`}
           >
             <View style={tw`flex-row items-center flex-1`}>
@@ -182,10 +222,10 @@ export default function CreateMeetingScreen() {
         </View>
 
         <Button
-          title={loading ? 'Збереження...' : 'Створити зустріч'}
+          title={saving ? 'Збереження...' : 'Зберегти зміни'}
           onPress={handleSave}
-          loading={loading}
-          disabled={loading}
+          loading={saving}
+          disabled={saving}
           fullWidth
         />
       </ScrollView>

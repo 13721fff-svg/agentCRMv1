@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { DateData } from 'react-native-calendars';
-import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle } from 'lucide-react-native';
+import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import EmptyState from '@/components/EmptyState';
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import CalendarView from '@/components/CalendarView';
+import WeekView from '@/components/WeekView';
+import DayView from '@/components/DayView';
 import { useMeetingsStore } from '@/store/meetingsStore';
 import { useAuthStore } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
@@ -18,11 +20,14 @@ export default function MeetingsScreen() {
   const user = useAuthStore((state) => state.user);
   const { meetings, setMeetings } = useMeetingsStore();
 
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [viewMode, setViewMode] = useState<'month' | 'week' | 'day' | 'list'>('month');
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0]
   );
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
   useEffect(() => {
     loadMeetings();
@@ -52,8 +57,22 @@ export default function MeetingsScreen() {
     setSelectedDate(date.dateString);
   };
 
-  const getMeetingsForDate = (date: string) => {
+  const getFilteredMeetings = () => {
     return meetings.filter((meeting) => {
+      const matchesSearch = !searchQuery ||
+        meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        meeting.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        meeting.location?.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesStatus = !statusFilter || meeting.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  };
+
+  const getMeetingsForDate = (date: string) => {
+    const filtered = getFilteredMeetings();
+    return filtered.filter((meeting) => {
       const meetingDate = new Date(meeting.start_time).toISOString().split('T')[0];
       return meetingDate === date;
     });
@@ -103,8 +122,9 @@ export default function MeetingsScreen() {
 
   const renderListView = () => {
     const groupedMeetings: { [key: string]: any[] } = {};
+    const filteredMeetings = getFilteredMeetings();
 
-    meetings.forEach((meeting) => {
+    filteredMeetings.forEach((meeting) => {
       const date = new Date(meeting.start_time).toISOString().split('T')[0];
       if (!groupedMeetings[date]) {
         groupedMeetings[date] = [];
@@ -171,7 +191,7 @@ export default function MeetingsScreen() {
     );
   };
 
-  const renderCalendarView = () => (
+  const renderMonthView = () => (
     <ScrollView style={tw`flex-1`} contentContainerStyle={tw`p-4 pb-24`}>
       <CalendarView
         meetings={meetings}
@@ -245,6 +265,72 @@ export default function MeetingsScreen() {
     </ScrollView>
   );
 
+  const renderWeekView = () => (
+    <ScrollView style={tw`flex-1`} contentContainerStyle={tw`p-4 pb-24`}>
+      <WeekView
+        meetings={getFilteredMeetings()}
+        selectedDate={new Date(selectedDate)}
+        onDateChange={(date) => setSelectedDate(date.toISOString().split('T')[0])}
+        onMeetingPress={(id) => router.push(`/meetings/${id}`)}
+      />
+
+      {selectedDateMeetings.length > 0 && (
+        <View style={tw`mt-4`}>
+          <Text style={tw`text-lg font-semibold text-gray-900 mb-3`}>
+            Зустрічі на цей день
+          </Text>
+          {selectedDateMeetings.map((meeting) => (
+            <TouchableOpacity
+              key={meeting.id}
+              onPress={() => router.push(`/meetings/${meeting.id}`)}
+            >
+              <Card style={tw`mb-3`}>
+                <View style={tw`flex-row items-start justify-between mb-2`}>
+                  <Text style={tw`text-lg font-semibold text-gray-900 flex-1`}>
+                    {meeting.title}
+                  </Text>
+                  {getStatusIcon(meeting.status)}
+                </View>
+
+                <View style={tw`flex-row items-center mb-2`}>
+                  <Clock size={14} color="#6b7280" />
+                  <Text style={tw`text-sm text-gray-600 ml-1`}>
+                    {formatTime(meeting.start_time)} - {formatTime(meeting.end_time)}
+                  </Text>
+                </View>
+
+                {meeting.location && (
+                  <View style={tw`flex-row items-center mb-2`}>
+                    <MapPin size={14} color="#6b7280" />
+                    <Text style={tw`text-sm text-gray-600 ml-1`}>{meeting.location}</Text>
+                  </View>
+                )}
+
+                <View style={tw`flex-row items-center`}>
+                  <View style={tw`px-2 py-1 rounded-full ${getStatusColor(meeting.status)}`}>
+                    <Text style={tw`text-xs font-medium`}>
+                      {getStatusText(meeting.status)}
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </ScrollView>
+  );
+
+  const renderDayView = () => (
+    <ScrollView style={tw`flex-1`} contentContainerStyle={tw`p-4 pb-24`}>
+      <DayView
+        meetings={getFilteredMeetings()}
+        selectedDate={new Date(selectedDate)}
+        onMeetingPress={(id) => router.push(`/meetings/${id}`)}
+      />
+    </ScrollView>
+  );
+
   if (loading) {
     return (
       <View style={tw`flex-1 bg-neutral-50`}>
@@ -263,14 +349,8 @@ export default function MeetingsScreen() {
         showBack
         rightAction={
           <View style={tw`flex-row items-center gap-3`}>
-            <TouchableOpacity
-              onPress={() => setViewMode(viewMode === 'calendar' ? 'list' : 'calendar')}
-            >
-              {viewMode === 'calendar' ? (
-                <List size={24} color="#0284c7" />
-              ) : (
-                <Calendar size={24} color="#0284c7" />
-              )}
+            <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
+              <Filter size={24} color={showFilters || statusFilter ? '#0284c7' : '#737373'} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/meetings/create')}>
               <Plus size={24} color="#0284c7" />
@@ -278,6 +358,103 @@ export default function MeetingsScreen() {
           </View>
         }
       />
+
+      <View style={tw`bg-white px-4 py-2 border-b border-gray-200 flex-row justify-center gap-2`}>
+        <TouchableOpacity
+          onPress={() => setViewMode('month')}
+          style={tw`px-4 py-2 rounded-lg ${viewMode === 'month' ? 'bg-blue-600' : 'bg-gray-100'}`}
+        >
+          <Text style={tw`text-xs font-medium ${viewMode === 'month' ? 'text-white' : 'text-gray-700'}`}>
+            Місяць
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setViewMode('week')}
+          style={tw`px-4 py-2 rounded-lg ${viewMode === 'week' ? 'bg-blue-600' : 'bg-gray-100'}`}
+        >
+          <Text style={tw`text-xs font-medium ${viewMode === 'week' ? 'text-white' : 'text-gray-700'}`}>
+            Тиждень
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setViewMode('day')}
+          style={tw`px-4 py-2 rounded-lg ${viewMode === 'day' ? 'bg-blue-600' : 'bg-gray-100'}`}
+        >
+          <Text style={tw`text-xs font-medium ${viewMode === 'day' ? 'text-white' : 'text-gray-700'}`}>
+            День
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setViewMode('list')}
+          style={tw`px-4 py-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-600' : 'bg-gray-100'}`}
+        >
+          <Text style={tw`text-xs font-medium ${viewMode === 'list' ? 'text-white' : 'text-gray-700'}`}>
+            Список
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {showFilters && (
+        <View style={tw`bg-white px-4 py-3 border-b border-gray-200`}>
+          <View style={tw`flex-row items-center bg-gray-100 rounded-lg px-3 py-2 mb-3`}>
+            <Search size={16} color="#6b7280" />
+            <TextInput
+              style={tw`flex-1 ml-2 text-base text-gray-900`}
+              placeholder="Пошук зустрічей..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <X size={16} color="#6b7280" />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View style={tw`flex-row flex-wrap gap-2`}>
+            <TouchableOpacity
+              onPress={() => setStatusFilter(null)}
+              style={tw`px-3 py-2 rounded-full ${
+                !statusFilter ? 'bg-blue-600' : 'bg-gray-200'
+              }`}
+            >
+              <Text style={tw`text-xs font-medium ${!statusFilter ? 'text-white' : 'text-gray-700'}`}>
+                Всі
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setStatusFilter('scheduled')}
+              style={tw`px-3 py-2 rounded-full ${
+                statusFilter === 'scheduled' ? 'bg-blue-600' : 'bg-gray-200'
+              }`}
+            >
+              <Text style={tw`text-xs font-medium ${statusFilter === 'scheduled' ? 'text-white' : 'text-gray-700'}`}>
+                Заплановано
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setStatusFilter('completed')}
+              style={tw`px-3 py-2 rounded-full ${
+                statusFilter === 'completed' ? 'bg-green-600' : 'bg-gray-200'
+              }`}
+            >
+              <Text style={tw`text-xs font-medium ${statusFilter === 'completed' ? 'text-white' : 'text-gray-700'}`}>
+                Завершено
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setStatusFilter('cancelled')}
+              style={tw`px-3 py-2 rounded-full ${
+                statusFilter === 'cancelled' ? 'bg-red-600' : 'bg-gray-200'
+              }`}
+            >
+              <Text style={tw`text-xs font-medium ${statusFilter === 'cancelled' ? 'text-white' : 'text-gray-700'}`}>
+                Скасовано
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
       {meetings.length === 0 ? (
         <ScrollView contentContainerStyle={tw`flex-1 p-4`}>
@@ -294,7 +471,12 @@ export default function MeetingsScreen() {
           />
         </ScrollView>
       ) : (
-        <>{viewMode === 'calendar' ? renderCalendarView() : renderListView()}</>
+        <>
+          {viewMode === 'month' && renderMonthView()}
+          {viewMode === 'week' && renderWeekView()}
+          {viewMode === 'day' && renderDayView()}
+          {viewMode === 'list' && renderListView()}
+        </>
       )}
     </View>
   );

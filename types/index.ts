@@ -126,6 +126,7 @@ export interface Task {
 }
 
 export type MeetingStatus = 'scheduled' | 'completed' | 'cancelled';
+export type RecurrenceFrequency = 'none' | 'daily' | 'weekly' | 'monthly';
 
 export interface Meeting {
   id: string;
@@ -140,6 +141,9 @@ export interface Meeting {
   end_time: string;
   participants: string[];
   status: MeetingStatus;
+  recurrence_frequency?: RecurrenceFrequency;
+  recurrence_end_date?: string;
+  parent_meeting_id?: string;
   notes?: string;
   created_by: string;
   created_at: string;
