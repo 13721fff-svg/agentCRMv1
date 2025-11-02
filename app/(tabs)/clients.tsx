@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Plus, Users } from 'lucide-react-native';
+import { Plus, Users, MapPin } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import EmptyState from '@/components/EmptyState';
@@ -17,9 +17,14 @@ export default function ClientsScreen() {
       <Header
         title={t('clients.title')}
         rightAction={
-          <TouchableOpacity onPress={() => router.push('/clients/create')}>
-            <Plus size={24} color="#0284c7" />
-          </TouchableOpacity>
+          <View style={tw`flex-row gap-3`}>
+            <TouchableOpacity onPress={() => router.push('/map/clients')}>
+              <MapPin size={24} color="#0284c7" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/clients/create')}>
+              <Plus size={24} color="#0284c7" />
+            </TouchableOpacity>
+          </View>
         }
       />
 

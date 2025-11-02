@@ -352,6 +352,9 @@ export default function MeetingsScreen() {
             <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
               <Filter size={24} color={showFilters || statusFilter ? '#0284c7' : '#737373'} />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/map/meetings')}>
+              <MapPin size={24} color="#0284c7" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/meetings/create')}>
               <Plus size={24} color="#0284c7" />
             </TouchableOpacity>

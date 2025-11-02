@@ -41,7 +41,10 @@ export interface Client {
   full_name: string;
   email?: string;
   phone?: string;
+  company?: string;
   address?: string;
+  latitude?: number;
+  longitude?: number;
   notes?: string;
   tags?: string[];
   rating?: number;

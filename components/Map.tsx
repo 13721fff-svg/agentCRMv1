@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Platform, ActivityIndicator, Text } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, StyleSheet, Platform, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, MapType } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { Layers } from 'lucide-react-native';
 import tw from '@/lib/tw';
 
 interface MapComponentProps {
@@ -13,9 +14,11 @@ interface MapComponentProps {
     longitude: number;
     title: string;
     description?: string;
+    color?: string;
   }>;
   onLocationSelect?: (location: { latitude: number; longitude: number; address?: string }) => void;
   showCurrentLocation?: boolean;
+  showMapTypeSelector?: boolean;
   height?: number;
 }
 
@@ -25,11 +28,13 @@ export default function Map({
   markers = [],
   onLocationSelect,
   showCurrentLocation = true,
+  showMapTypeSelector = false,
   height = 300,
 }: MapComponentProps) {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mapType, setMapType] = useState<MapType>('standard');
 
   useEffect(() => {
     getCurrentLocation();
@@ -118,12 +123,32 @@ export default function Map({
     longitudeDelta: 0.05,
   };
 
+  const toggleMapType = () => {
+    setMapType((prev) => {
+      if (prev === 'standard') return 'satellite';
+      if (prev === 'satellite') return 'hybrid';
+      return 'standard';
+    });
+  };
+
+  const getMapTypeLabel = () => {
+    switch (mapType) {
+      case 'satellite':
+        return 'Супутник';
+      case 'hybrid':
+        return 'Гібрид';
+      default:
+        return 'Карта';
+    }
+  };
+
   return (
     <View style={[styles.container, { height }]}>
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={initialRegion}
+        mapType={mapType}
         showsUserLocation={showCurrentLocation}
         showsMyLocationButton={showCurrentLocation}
         onPress={handleMapPress}
@@ -137,6 +162,7 @@ export default function Map({
             }}
             title={marker.title}
             description={marker.description}
+            pinColor={marker.color || '#ef4444'}
           />
         ))}
 
@@ -148,6 +174,18 @@ export default function Map({
           />
         )}
       </MapView>
+
+      {showMapTypeSelector && (
+        <TouchableOpacity
+          onPress={toggleMapType}
+          style={styles.mapTypeButton}
+        >
+          <Layers size={16} color="#0284c7" />
+          <Text style={tw`text-xs font-medium text-blue-700 ml-1`}>
+            {getMapTypeLabel()}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -169,5 +207,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+  },
+  mapTypeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });

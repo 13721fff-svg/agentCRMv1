@@ -11,6 +11,7 @@ import {
   Megaphone,
   LogOut,
   ChevronRight,
+  MapPin,
 } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
@@ -56,6 +57,26 @@ export default function MoreScreen() {
       color: '#f59e0b',
       onPress: () => router.push('/meetings'),
       roles: ['individual', 'small', 'medium'],
+    },
+    {
+      id: 'maps',
+      title: 'Карти',
+      icon: MapPin,
+      color: '#06b6d4',
+      onPress: () => {},
+      roles: ['individual', 'small', 'medium'],
+      submenu: [
+        {
+          id: 'map-clients',
+          title: 'Клієнти на карті',
+          onPress: () => router.push('/map/clients'),
+        },
+        {
+          id: 'map-meetings',
+          title: 'Зустрічі на карті',
+          onPress: () => router.push('/map/meetings'),
+        },
+      ],
     },
     {
       id: 'kpi',
@@ -112,30 +133,48 @@ export default function MoreScreen() {
           {filteredItems.map((item, index) => {
             const Icon = item.icon;
             return (
-              <TouchableOpacity
-                key={item.id}
-                onPress={item.onPress}
-                activeOpacity={0.7}
-              >
-                <Card style={tw`mb-3`}>
-                  <View style={tw`flex-row items-center justify-between`}>
-                    <View style={tw`flex-row items-center flex-1`}>
-                      <View
-                        style={tw.style(
-                          'w-10 h-10 rounded-full items-center justify-center mr-3',
-                          { backgroundColor: item.color + '20' }
-                        )}
-                      >
-                        <Icon size={20} color={item.color} />
+              <View key={item.id}>
+                <TouchableOpacity
+                  onPress={item.onPress}
+                  activeOpacity={0.7}
+                >
+                  <Card style={tw`mb-3`}>
+                    <View style={tw`flex-row items-center justify-between`}>
+                      <View style={tw`flex-row items-center flex-1`}>
+                        <View
+                          style={tw.style(
+                            'w-10 h-10 rounded-full items-center justify-center mr-3',
+                            { backgroundColor: item.color + '20' }
+                          )}
+                        >
+                          <Icon size={20} color={item.color} />
+                        </View>
+                        <Text style={tw`text-base font-medium text-neutral-900`}>
+                          {item.title}
+                        </Text>
                       </View>
-                      <Text style={tw`text-base font-medium text-neutral-900`}>
-                        {item.title}
-                      </Text>
+                      <ChevronRight size={20} color="#a3a3a3" />
                     </View>
-                    <ChevronRight size={20} color="#a3a3a3" />
+                  </Card>
+                </TouchableOpacity>
+
+                {item.submenu && (
+                  <View style={tw`ml-4 mb-3`}>
+                    {item.submenu.map((subitem: any) => (
+                      <TouchableOpacity
+                        key={subitem.id}
+                        onPress={subitem.onPress}
+                        activeOpacity={0.7}
+                        style={tw`bg-white rounded-lg px-4 py-3 mb-2 border border-gray-200`}
+                      >
+                        <Text style={tw`text-sm text-gray-700`}>
+                          {subitem.title}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
                   </View>
-                </Card>
-              </TouchableOpacity>
+                )}
+              </View>
             );
           })}
 
