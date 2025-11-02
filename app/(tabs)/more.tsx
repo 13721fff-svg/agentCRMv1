@@ -95,6 +95,14 @@ export default function MoreScreen() {
       roles: ['individual', 'small', 'medium'],
     },
     {
+      id: 'marketing',
+      title: 'Marketing Hub',
+      icon: TrendingUp,
+      color: '#f59e0b',
+      onPress: () => router.push('/marketing'),
+      roles: ['individual', 'small', 'medium'],
+    },
+    {
       id: 'settings',
       title: t('profile.settings'),
       icon: Settings,
