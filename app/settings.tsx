@@ -306,9 +306,9 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => Alert.alert('Інтеграції', 'Управління інтеграціями буде доступне в наступній версії')}
+            onPress={() => router.push('/integrations/calendar')}
             activeOpacity={0.7}
-            style={tw`flex-row items-center justify-between py-3`}
+            style={tw`flex-row items-center justify-between py-3 border-b border-gray-100`}
           >
             <View style={tw`flex-row items-center flex-1`}>
               <View
@@ -318,9 +318,72 @@ export default function SettingsScreen() {
               </View>
               <View style={tw`flex-1`}>
                 <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
-                  Інші сервіси
+                  Календар
                 </Text>
-                <Text style={tw`text-sm text-gray-600`}>Google, Telegram</Text>
+                <Text style={tw`text-sm text-gray-600`}>Google, Outlook</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/integrations/email')}
+            activeOpacity={0.7}
+            style={tw`flex-row items-center justify-between py-3 border-b border-gray-100`}
+          >
+            <View style={tw`flex-row items-center flex-1`}>
+              <View
+                style={tw`w-10 h-10 rounded-full bg-purple-100 items-center justify-center mr-3`}
+              >
+                <Link size={20} color="#8b5cf6" />
+              </View>
+              <View style={tw`flex-1`}>
+                <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
+                  Email
+                </Text>
+                <Text style={tw`text-sm text-gray-600`}>Gmail, Outlook, SMTP</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/settings/audit')}
+            activeOpacity={0.7}
+            style={tw`flex-row items-center justify-between py-3 border-b border-gray-100`}
+          >
+            <View style={tw`flex-row items-center flex-1`}>
+              <View
+                style={tw`w-10 h-10 rounded-full bg-orange-100 items-center justify-center mr-3`}
+              >
+                <Shield size={20} color="#f59e0b" />
+              </View>
+              <View style={tw`flex-1`}>
+                <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
+                  Журнал дій
+                </Text>
+                <Text style={tw`text-sm text-gray-600`}>Audit log</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => router.push('/settings/reports')}
+            activeOpacity={0.7}
+            style={tw`flex-row items-center justify-between py-3`}
+          >
+            <View style={tw`flex-row items-center flex-1`}>
+              <View
+                style={tw`w-10 h-10 rounded-full bg-red-100 items-center justify-center mr-3`}
+              >
+                <Link size={20} color="#ef4444" />
+              </View>
+              <View style={tw`flex-1`}>
+                <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
+                  Звіти
+                </Text>
+                <Text style={tw`text-sm text-gray-600`}>PDF, CSV</Text>
               </View>
             </View>
             <ChevronRight size={20} color="#9ca3af" />
