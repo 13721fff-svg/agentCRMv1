@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity, Text, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Calendar, Clock, MapPin, FileText, Map as MapIcon, Users } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
@@ -19,6 +19,7 @@ import { generateRecurringInstances, checkMeetingConflict, getReminderLabel } fr
 
 export default function CreateMeetingScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const addMeeting = useMeetingsStore((state) => state.addMeeting);
   const params = useLocalSearchParams<{
@@ -196,7 +197,7 @@ export default function CreateMeetingScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={tw`flex-1 bg-white`}
+      style={[tw`flex-1`, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <Header title="Створити зустріч" showBack />
