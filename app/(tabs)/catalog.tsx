@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -7,21 +7,27 @@ import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import { useProvidersStore } from '@/store/providersStore';
 
-const categories = [
-  { id: '1', name: 'Ремонт', name_uk: 'Ремонт', icon: Wrench, color: '#0ea5e9' },
-  { id: '2', name: 'Будівництво', name_uk: 'Будівництво', icon: HomeIcon, color: '#22c55e' },
-  { id: '3', name: 'Авто', name_uk: 'Авто', icon: Car, color: '#f59e0b' },
-  { id: '4', name: 'Краса', name_uk: 'Краса', icon: Scissors, color: '#ef4444' },
-  { id: '5', name: 'Дизайн', name_uk: 'Дизайн', icon: Paintbrush, color: '#8b5cf6' },
-  { id: '6', name: 'Фото', name_uk: 'Фото', icon: Camera, color: '#06b6d4' },
-];
+const iconMap: Record<string, any> = {
+  Wrench,
+  Home: HomeIcon,
+  Car,
+  Paintbrush,
+  Scissors,
+  Camera,
+};
 
 export default function CatalogScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { colors } = useThemedStyles();
   const [searchQuery, setSearchQuery] = useState('');
+  const { categories, fetchCategories } = useProvidersStore();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   return (
     <View style={tw`flex-1 bg-neutral-50`}>
@@ -54,12 +60,12 @@ export default function CatalogScreen() {
           </Text>
           <View style={tw`flex-row flex-wrap`}>
             {categories.map((category) => {
-              const Icon = category.icon;
+              const Icon = iconMap[category.icon] || Wrench;
               return (
                 <Card
                   key={category.id}
                   style={tw`w-[48%] m-1`}
-                  onPress={() => console.log('Category:', category.name_uk)}
+                  onPress={() => router.push(`/catalog/${category.id}`)}
                 >
                   <View style={tw`items-center py-4`}>
                     <View

@@ -140,7 +140,16 @@
     "categories": "Категорії",
     "providers": "Виконавці",
     "services": "Послуги",
-    "searchServices": "Шукати послуги"
+    "searchServices": "Шукати послуги",
+    "searchProviders": "Шукати виконавців",
+    "noProviders": "Немає виконавців",
+    "noProvidersDescription": "В цій категорії поки немає виконавців",
+    "noAddress": "Адреса не вказана",
+    "reviews": "відгуків",
+    "category": "Категорія",
+    "createRequest": "Створити заявку",
+    "viewReviews": "Відгуки",
+    "message": "Написати"
   },
   "requests": {
     "title": "Заявки",
