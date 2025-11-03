@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Platform, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
-import { MapView, Marker, Callout } from 'expo-maps';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { MapPin, Phone, Mail, Navigation, X } from 'lucide-react-native';
 import tw from '@/lib/tw';

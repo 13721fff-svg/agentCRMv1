@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Platform, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
-import { MapView, Marker } from 'expo-maps';
-import { MapType } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, MapType } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Layers } from 'lucide-react-native';
 import tw from '@/lib/tw';

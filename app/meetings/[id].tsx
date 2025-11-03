@@ -10,7 +10,7 @@ import Button from '@/components/Button';
 import Map from '@/components/Map';
 import { MeetingStatus } from '@/types';
 
-function MeetingDetailsScreen() {
+export default function MeetingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const [meeting, setMeeting] = useState<any>(null);
@@ -297,5 +297,3 @@ function MeetingDetailsScreen() {
     </View>
   );
 }
-
-export default MeetingDetailsScreen;
