@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import { useThemedStyles } from '@/lib/tw';
 import Card from './Card';
 
 interface KPICardProps {
@@ -23,25 +23,27 @@ export default function KPICard({
   color,
   onPress,
 }: KPICardProps) {
+  const { colors, tw } = useThemedStyles();
+
   const getTrendIcon = () => {
     switch (trend) {
       case 'up':
-        return <TrendingUp size={12} color="#16a34a" />;
+        return <TrendingUp size={12} color={colors.success} />;
       case 'down':
-        return <TrendingDown size={12} color="#ef4444" />;
+        return <TrendingDown size={12} color={colors.error} />;
       default:
-        return <Minus size={12} color="#6b7280" />;
+        return <Minus size={12} color={colors.textSecondary} />;
     }
   };
 
-  const getTrendColor = () => {
+  const getTrendColorValue = () => {
     switch (trend) {
       case 'up':
-        return 'text-green-600';
+        return colors.success;
       case 'down':
-        return 'text-red-600';
+        return colors.error;
       default:
-        return 'text-gray-600';
+        return colors.textSecondary;
     }
   };
 
@@ -55,12 +57,12 @@ export default function KPICard({
         >
           {icon}
         </View>
-        <Text style={tw`text-2xl font-bold text-gray-900 mb-1`}>{value}</Text>
-        <Text style={tw`text-xs text-gray-600 mb-1`}>{label}</Text>
+        <Text style={[tw`text-2xl font-bold mb-1`, { color: colors.text }]}>{value}</Text>
+        <Text style={[tw`text-xs mb-1`, { color: colors.textSecondary }]}>{label}</Text>
         {change !== undefined && (
           <View style={tw`flex-row items-center`}>
             {getTrendIcon()}
-            <Text style={tw`text-xs ${getTrendColor()} ml-1`}>
+            <Text style={[tw`text-xs ml-1`, { color: getTrendColorValue() }]}>
               {change > 0 ? '+' : ''}
               {change}%
             </Text>

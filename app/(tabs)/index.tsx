@@ -14,6 +14,7 @@ import {
   CheckSquare,
 } from 'lucide-react-native';
 import tw from '@/lib/tw';
+import { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import KPICard from '@/components/KPICard';
 import QuickActions from '@/components/QuickActions';
@@ -29,6 +30,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function DashboardScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { orders, setOrders } = useOrdersStore();
   const { clients, setClients } = useClientsStore();
@@ -251,17 +253,17 @@ export default function DashboardScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Головна" />
         <View style={tw`flex-1 items-center justify-center`}>
-          <ActivityIndicator size="large" color="#0284c7" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </View>
     );
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Головна" />
 
       <ScrollView
@@ -271,10 +273,10 @@ export default function DashboardScreen() {
         }
       >
         <View style={tw`mb-6`}>
-          <Text style={tw`text-2xl font-bold text-gray-900 mb-1`}>
+          <Text style={[tw`text-2xl font-bold mb-1`, { color: colors.text }]}>
             Вітаємо, {user?.full_name?.split(' ')[0] || user?.full_name}! 👋
           </Text>
-          <Text style={tw`text-gray-600`}>
+          <Text style={[tw``, { color: colors.textSecondary }]}>
             {user?.role === 'citizen'
               ? 'Знайдіть потрібні послуги'
               : 'Керуйте своїм бізнесом ефективно'}
@@ -283,14 +285,14 @@ export default function DashboardScreen() {
 
         {insights.length > 0 && (
           <View style={tw`mb-6`}>
-            <Text style={tw`text-lg font-semibold text-gray-900 mb-3`}>💡 AI-підказки</Text>
+            <Text style={[tw`text-lg font-semibold mb-3`, { color: colors.text }]}>💡 AI-підказки</Text>
             <AIInsights insights={insights} onDismiss={removeInsight} />
           </View>
         )}
 
         {user?.role !== 'citizen' && (
           <View style={tw`mb-6`}>
-            <Text style={tw`text-lg font-semibold text-gray-900 mb-3`}>📊 Основні показники</Text>
+            <Text style={[tw`text-lg font-semibold mb-3`, { color: colors.text }]}>📊 Основні показники</Text>
             <View style={tw`flex-row mb-2`}>
               <KPICard
                 label="Дохід"
@@ -335,16 +337,16 @@ export default function DashboardScreen() {
         )}
 
         <View style={tw`mb-6`}>
-          <Text style={tw`text-lg font-semibold text-gray-900 mb-3`}>⚡ Швидкі дії</Text>
+          <Text style={[tw`text-lg font-semibold mb-3`, { color: colors.text }]}>⚡ Швидкі дії</Text>
           <QuickActions actions={getQuickActions()} columns={2} />
         </View>
 
         {user?.role !== 'citizen' && (
           <View style={tw`mb-6`}>
             <View style={tw`flex-row items-center justify-between mb-3`}>
-              <Text style={tw`text-lg font-semibold text-gray-900`}>📦 Останні замовлення</Text>
+              <Text style={[tw`text-lg font-semibold`, { color: colors.text }]}>📦 Останні замовлення</Text>
               {orders.length > 0 && (
-                <Text style={tw`text-sm text-blue-700 font-medium`}>Всього: {orders.length}</Text>
+                <Text style={[tw`text-sm font-medium`, { color: colors.primary }]}>Всього: {orders.length}</Text>
               )}
             </View>
             <RecentOrders orders={orders} limit={5} />

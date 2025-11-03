@@ -1,6 +1,17 @@
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Home, ShoppingBag, Users, BarChart3, Menu } from 'lucide-react-native';
+import {
+  Home,
+  ShoppingBag,
+  Users,
+  BarChart3,
+  Menu,
+  CheckSquare,
+  Calendar,
+  Megaphone,
+  UsersRound,
+  Target,
+} from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 
 export default function TabLayout() {
@@ -8,7 +19,11 @@ export default function TabLayout() {
   const user = useAuthStore((state) => state.user);
 
   const showCatalog = user?.role === 'citizen';
-  const showClients = user?.role !== 'citizen';
+  const showBusiness = user?.role !== 'citizen';
+  const showTasks = user?.role === 'individual' || user?.role === 'small' || user?.role === 'medium';
+  const showMeetings = user?.role === 'individual' || user?.role === 'small' || user?.role === 'medium';
+  const showCampaigns = user?.role === 'individual' || user?.role === 'small' || user?.role === 'medium';
+  const showTeam = user?.role === 'small' || user?.role === 'medium';
   const showAnalytics = user?.role === 'small' || user?.role === 'medium';
 
   return (
@@ -49,12 +64,52 @@ export default function TabLayout() {
         }}
       />
 
-      {showClients && (
+      {showBusiness && (
         <Tabs.Screen
           name="clients"
           options={{
             title: t('tabs.clients'),
             tabBarIcon: ({ size, color }) => <Users size={size} color={color} />,
+          }}
+        />
+      )}
+
+      {showTasks && (
+        <Tabs.Screen
+          name="tasks"
+          options={{
+            title: 'Завдання',
+            tabBarIcon: ({ size, color }) => <CheckSquare size={size} color={color} />,
+          }}
+        />
+      )}
+
+      {showMeetings && (
+        <Tabs.Screen
+          name="meetings"
+          options={{
+            title: 'Зустрічі',
+            tabBarIcon: ({ size, color }) => <Calendar size={size} color={color} />,
+          }}
+        />
+      )}
+
+      {showCampaigns && (
+        <Tabs.Screen
+          name="campaigns"
+          options={{
+            title: 'Кампанії',
+            tabBarIcon: ({ size, color }) => <Megaphone size={size} color={color} />,
+          }}
+        />
+      )}
+
+      {showTeam && (
+        <Tabs.Screen
+          name="team"
+          options={{
+            title: 'Команда',
+            tabBarIcon: ({ size, color }) => <UsersRound size={size} color={color} />,
           }}
         />
       )}

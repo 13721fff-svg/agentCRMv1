@@ -12,6 +12,7 @@ import ClientSelector from '@/components/ClientSelector';
 import { useMeetingsStore } from '@/store/meetingsStore';
 import { useAuthStore } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
+import { notificationService } from '@/services/notificationService';
 
 export default function CreateMeetingScreen() {
   const router = useRouter();
@@ -89,6 +90,13 @@ export default function CreateMeetingScreen() {
       if (error) throw error;
 
       addMeeting(data);
+
+      await notificationService.scheduleMeetingNotification({
+        id: data.id,
+        title: data.title,
+        startTime: data.start_time,
+        location: data.location || undefined,
+      });
 
       Alert.alert('Успіх', 'Зустріч створено!', [
         {

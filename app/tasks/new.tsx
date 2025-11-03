@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useTasksStore } from '@/store/tasksStore';
 import { useTeamStore } from '@/store/teamStore';
 import { supabase } from '@/lib/supabase';
+import { notificationService } from '@/services/notificationService';
 
 export default function NewTaskScreen() {
   const router = useRouter();
@@ -66,7 +67,12 @@ export default function NewTaskScreen() {
       addTask(data);
 
       if (dueDate) {
-        scheduleNotification(data.id, title, dueDate);
+        await notificationService.scheduleTaskNotification({
+          id: data.id,
+          title: data.title,
+          dueDate: data.due_date,
+          priority: data.priority,
+        });
       }
 
       Alert.alert('Успіх', 'Завдання створено', [

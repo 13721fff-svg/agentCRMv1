@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Plus, Users, MapPin, Phone, Mail, ChevronRight, Search } from 'lucide-react-native';
+import { Plus, Users, MapPin, Phone, Mail, ChevronRight, Search, Download } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
@@ -19,6 +19,8 @@ import Input from '@/components/Input';
 import { useAuthStore } from '@/store/authStore';
 import { useClientsStore } from '@/store/clientsStore';
 import { supabase } from '@/lib/supabase';
+import { exportService } from '@/services/exportService';
+import { Alert } from 'react-native';
 
 export default function ClientsScreen() {
   const { t } = useTranslation();
@@ -28,6 +30,22 @@ export default function ClientsScreen() {
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  const handleExport = async () => {
+    try {
+      setExporting(true);
+      const success = await exportService.exportClientsToCSV(filteredClients);
+      if (success) {
+        Alert.alert('Успіх', 'Клієнтів експортовано');
+      }
+    } catch (error) {
+      console.error('Error exporting:', error);
+      Alert.alert('Помилка', 'Не вдалося експортувати клієнтів');
+    } finally {
+      setExporting(false);
+    }
+  };
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -97,6 +115,9 @@ export default function ClientsScreen() {
         title={t('clients.title')}
         rightAction={
           <View style={tw`flex-row gap-3`}>
+            <TouchableOpacity onPress={handleExport} disabled={exporting}>
+              <Download size={24} color="#0284c7" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/map/clients')}>
               <MapPin size={24} color="#0284c7" />
             </TouchableOpacity>

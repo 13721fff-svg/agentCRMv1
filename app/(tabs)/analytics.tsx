@@ -30,6 +30,7 @@ import BarChart from '@/components/BarChart';
 import { useAuthStore } from '@/store/authStore';
 import { useAnalyticsStore } from '@/store/analyticsStore';
 import { supabase } from '@/lib/supabase';
+import { exportService } from '@/services/exportService';
 
 type Period = 'day' | 'week' | 'month' | 'year';
 
@@ -124,40 +125,16 @@ export default function AnalyticsScreen() {
     try {
       setExporting(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const success = await exportService.exportAnalyticsToCSV({
+        kpis,
+        revenueByMonth,
+        ordersByStatus,
+        topClients,
+      });
 
-      const metrics = calculateMetrics();
-      const data = `
-Звіт аналітики - ${new Date().toLocaleDateString('uk-UA')}
-Період: ${period === 'day' ? 'День' : period === 'week' ? 'Тиждень' : period === 'month' ? 'Місяць' : 'Рік'}
-
-ОСНОВНІ ПОКАЗНИКИ:
-- Дохід: ₴${metrics.revenue.value.toLocaleString()} (${metrics.revenue.change > 0 ? '+' : ''}${metrics.revenue.change}%)
-- Замовлення: ${metrics.orders.value} (${metrics.orders.change > 0 ? '+' : ''}${metrics.orders.change}%)
-- Нові клієнти: ${metrics.clients.value} (${metrics.clients.change > 0 ? '+' : ''}${metrics.clients.change}%)
-- Конверсія: ${metrics.conversion.value} (${metrics.conversion.change > 0 ? '+' : ''}${metrics.conversion.change}%)
-
-ПРОГНОЗ:
-${generateAIForecast().forecast}
-Очікуване зростання: ${generateAIForecast().prediction > 0 ? '+' : ''}${generateAIForecast().prediction}%
-      `.trim();
-
-      if (Platform.OS === 'web') {
-        const blob = new Blob([data], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `analytics-report-${new Date().getTime()}.${format}`;
-        a.click();
-        URL.revokeObjectURL(url);
-      } else {
-        Alert.alert(
-          'Звіт готовий',
-          `Звіт у форматі ${format.toUpperCase()} буде збережено в папку завантажень`
-        );
+      if (success) {
+        Alert.alert('Успіх', 'Звіт експортовано');
       }
-
-      Alert.alert('Успіх', `Звіт експортовано у форматі ${format.toUpperCase()}`);
     } catch (error) {
       console.error('Error exporting:', error);
       Alert.alert('Помилка', 'Не вдалося експортувати звіт');

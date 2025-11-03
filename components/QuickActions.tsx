@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import tw from '@/lib/tw';
+import { useThemedStyles } from '@/lib/tw';
 import Card from './Card';
 
 interface QuickAction {
@@ -17,6 +17,7 @@ interface QuickActionsProps {
 }
 
 export default function QuickActions({ actions, columns = 2 }: QuickActionsProps) {
+  const { colors, tw } = useThemedStyles();
   const columnWidth = columns === 2 ? 'w-1/2' : columns === 3 ? 'w-1/3' : 'w-1/4';
 
   return (
@@ -37,7 +38,7 @@ export default function QuickActions({ actions, columns = 2 }: QuickActionsProps
               >
                 {action.icon}
               </View>
-              <Text style={tw`text-sm font-medium text-gray-900 text-center`}>
+              <Text style={[tw`text-sm font-medium text-center`, { color: colors.text }]}>
                 {action.title}
               </Text>
             </View>
