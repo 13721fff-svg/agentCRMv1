@@ -22,7 +22,7 @@ import {
   Shield,
   AlertCircle,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -54,6 +54,7 @@ const STATUS_CONFIG = {
 
 export default function PaymentsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { user } = useAuthStore();
 
   const [loading, setLoading] = useState(true);
@@ -370,11 +371,153 @@ export default function PaymentsScreen() {
     </View>
   );
 
+  const handlePayInvoice = async (invoice: Invoice) => {
+    if (invoice.status === 'paid') {
+      Alert.alert('Інформація', 'Цей рахунок вже оплачено');
+      return;
+    }
+
+    if (paymentMethods.length === 0) {
+      Alert.alert('Помилка', 'Спочатку додайте метод оплати');
+      return;
+    }
+
+    Alert.alert(
+      'Оплатити рахунок',
+      `Сума: ₴${invoice.amount.toLocaleString('uk-UA')}\nКартою: •••• ${paymentMethods[0].last_four}`,
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Оплатити',
+          onPress: async () => {
+            try {
+              const transaction: Partial<Transaction> = {
+                user_id: user!.id,
+                org_id: user!.org_id,
+                payment_method_id: paymentMethods[0].id,
+                provider_id: providers[0]?.id,
+                amount: invoice.amount,
+                currency: invoice.currency,
+                status: 'succeeded',
+                transaction_type: 'payment',
+                description: `Оплата рахунку #${invoice.invoice_number}`,
+                provider_transaction_id: `demo_${Date.now()}`,
+                processed_at: new Date().toISOString(),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              };
+
+              const [transactionRes, invoiceRes] = await Promise.all([
+                supabase.from('transactions').insert(transaction).select().single(),
+                supabase
+                  .from('invoices')
+                  .update({ status: 'paid', paid_at: new Date().toISOString() })
+                  .eq('id', invoice.id)
+                  .select()
+                  .single(),
+              ]);
+
+              if (transactionRes.error) throw transactionRes.error;
+              if (invoiceRes.error) throw invoiceRes.error;
+
+              if (transactionRes.data) {
+                setTransactions([transactionRes.data, ...transactions]);
+              }
+              if (invoiceRes.data) {
+                setInvoices(invoices.map((inv) => (inv.id === invoice.id ? invoiceRes.data : inv)));
+              }
+
+              Alert.alert('✅ Успішно!', `Рахунок #${invoice.invoice_number} оплачено\nСума: ₴${invoice.amount.toLocaleString('uk-UA')}`);
+            } catch (error) {
+              console.error('Error paying invoice:', error);
+              Alert.alert('Помилка', 'Не вдалося оплатити рахунок');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleCreateDemoInvoice = async () => {
+    if (!user) return;
+
+    try {
+      const demoInvoice: Partial<Invoice> = {
+        user_id: user.id,
+        org_id: user.org_id,
+        invoice_number: `INV-${Date.now().toString().slice(-6)}`,
+        amount: Math.floor(Math.random() * 5000) + 500,
+        currency: 'UAH',
+        status: 'sent',
+        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
+        .from('invoices')
+        .insert(demoInvoice)
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setInvoices([data, ...invoices]);
+        Alert.alert('Успіх', 'Демо-рахунок створено');
+      }
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      Alert.alert('Помилка', 'Не вдалося створити рахунок');
+    }
+  };
+
+  const getInvoiceStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return '#16a34a';
+      case 'sent':
+        return '#f59e0b';
+      case 'draft':
+        return '#6b7280';
+      case 'overdue':
+        return '#ef4444';
+      case 'cancelled':
+        return '#6b7280';
+      default:
+        return '#6b7280';
+    }
+  };
+
+  const getInvoiceStatusLabel = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'Оплачено';
+      case 'sent':
+        return 'Очікує оплати';
+      case 'draft':
+        return 'Чернетка';
+      case 'overdue':
+        return 'Прострочено';
+      case 'cancelled':
+        return 'Скасовано';
+      default:
+        return status;
+    }
+  };
+
   const renderInvoices = () => (
     <View>
-      <Text style={tw`text-lg font-semibold text-gray-900 mb-4`}>
-        Рахунки та інвойси
-      </Text>
+      <View style={tw`flex-row items-center justify-between mb-4`}>
+        <Text style={tw`text-lg font-semibold text-gray-900`}>
+          Рахунки та інвойси
+        </Text>
+        <TouchableOpacity
+          onPress={handleCreateDemoInvoice}
+          style={tw`px-3 py-1.5 bg-purple-600 rounded-lg`}
+        >
+          <Text style={tw`text-sm font-medium text-white`}>Створити</Text>
+        </TouchableOpacity>
+      </View>
 
       {invoices.length === 0 ? (
         <Card>
@@ -388,14 +531,28 @@ export default function PaymentsScreen() {
       ) : (
         invoices.map((invoice) => (
           <Card key={invoice.id} style={tw`mb-3`}>
-            <View style={tw`flex-row items-start justify-between`}>
+            <View style={tw`flex-row items-start justify-between mb-3`}>
               <View style={tw`flex-1`}>
                 <Text style={tw`text-base font-semibold text-gray-900 mb-1`}>
                   Рахунок #{invoice.invoice_number}
                 </Text>
-                <Text style={tw`text-sm text-gray-600 mb-2`}>
-                  Статус: {invoice.status}
-                </Text>
+                <View style={tw`flex-row items-center mb-2`}>
+                  <View
+                    style={[
+                      tw`px-2 py-0.5 rounded`,
+                      { backgroundColor: `${getInvoiceStatusColor(invoice.status)}20` },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        tw`text-xs font-medium`,
+                        { color: getInvoiceStatusColor(invoice.status) },
+                      ]}
+                    >
+                      {getInvoiceStatusLabel(invoice.status)}
+                    </Text>
+                  </View>
+                </View>
                 <Text style={tw`text-xs text-gray-500`}>
                   {new Date(invoice.created_at).toLocaleDateString('uk-UA')}
                 </Text>
@@ -404,12 +561,29 @@ export default function PaymentsScreen() {
                 <Text style={tw`text-xl font-bold text-gray-900 mb-2`}>
                   ₴{invoice.amount.toLocaleString('uk-UA')}
                 </Text>
-                <TouchableOpacity style={tw`flex-row items-center`}>
+                <TouchableOpacity style={tw`flex-row items-center mb-2`}>
                   <Download size={14} color="#0284c7" />
                   <Text style={tw`text-sm text-blue-600 ml-1`}>PDF</Text>
                 </TouchableOpacity>
               </View>
             </View>
+
+            {invoice.status === 'sent' && (
+              <Button
+                title="💳 Оплатити"
+                onPress={() => handlePayInvoice(invoice)}
+                fullWidth
+              />
+            )}
+
+            {invoice.status === 'paid' && (
+              <View style={tw`flex-row items-center justify-center py-2 bg-green-50 rounded-lg`}>
+                <CheckCircle size={16} color="#16a34a" />
+                <Text style={tw`text-sm font-medium text-green-700 ml-2`}>
+                  Оплачено {invoice.paid_at ? new Date(invoice.paid_at).toLocaleDateString('uk-UA') : ''}
+                </Text>
+              </View>
+            )}
           </Card>
         ))
       )}
@@ -423,7 +597,7 @@ export default function PaymentsScreen() {
   ];
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Платежі та оплата" showBack />
 
       <View style={tw`px-4 pt-4 pb-2`}>
