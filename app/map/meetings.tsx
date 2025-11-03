@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Platform, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
-import MapView, { Marker, Callout, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import { MapView, Marker, Callout, Polyline } from 'expo-maps';
 import * as Location from 'expo-location';
 import { MapPin, Clock, Navigation, X, Calendar, CheckCircle, XCircle } from 'lucide-react-native';
 import tw from '@/lib/tw';
@@ -12,7 +12,7 @@ import { useMeetingsStore } from '@/store/meetingsStore';
 import { supabase } from '@/lib/supabase';
 import { Meeting } from '@/types';
 
-export default function MeetingsMapScreen() {
+function MeetingsMapScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { meetings, setMeetings } = useMeetingsStore();
@@ -223,7 +223,6 @@ export default function MeetingsMapScreen() {
       ) : (
         <>
           <MapView
-            provider={PROVIDER_GOOGLE}
             style={tw`flex-1`}
             initialRegion={initialRegion}
             showsUserLocation
@@ -361,3 +360,5 @@ export default function MeetingsMapScreen() {
     </View>
   );
 }
+
+export default MeetingsMapScreen;

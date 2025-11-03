@@ -11,7 +11,7 @@ import Button from '@/components/Button';
 import Map from '@/components/Map';
 import { MeetingStatus } from '@/types';
 
-export default function MeetingDetailsScreen() {
+function MeetingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -299,3 +299,5 @@ export default function MeetingDetailsScreen() {
     </View>
   );
 }
+
+export default MeetingDetailsScreen;

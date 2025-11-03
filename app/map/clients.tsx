@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Platform, Linking } from 'react-native';
 import { useRouter } from 'expo-router';
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { MapView, Marker, Callout } from 'expo-maps';
 import * as Location from 'expo-location';
 import { MapPin, Phone, Mail, Navigation, X } from 'lucide-react-native';
 import tw from '@/lib/tw';
@@ -12,7 +12,7 @@ import { useClientsStore } from '@/store/clientsStore';
 import { supabase } from '@/lib/supabase';
 import { Client } from '@/types';
 
-export default function ClientsMapScreen() {
+function ClientsMapScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const { clients, setClients } = useClientsStore();
@@ -145,7 +145,6 @@ export default function ClientsMapScreen() {
       ) : (
         <>
           <MapView
-            provider={PROVIDER_GOOGLE}
             style={tw`flex-1`}
             initialRegion={initialRegion}
             showsUserLocation
@@ -257,3 +256,5 @@ export default function ClientsMapScreen() {
     </View>
   );
 }
+
+export default ClientsMapScreen;

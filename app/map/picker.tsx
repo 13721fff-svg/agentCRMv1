@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, Platform } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { MapView, Marker } from 'expo-maps';
 import * as Location from 'expo-location';
 import { MapPin, Search, Check, X } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import Button from '@/components/Button';
 
-export default function MapPickerScreen() {
+function MapPickerScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
     returnTo?: string;
@@ -232,7 +232,6 @@ export default function MapPickerScreen() {
       ) : (
         <View style={tw`flex-1`}>
           <MapView
-            provider={PROVIDER_GOOGLE}
             style={tw`flex-1`}
             initialRegion={initialRegion}
             region={
@@ -277,3 +276,5 @@ export default function MapPickerScreen() {
     </View>
   );
 }
+
+export default MapPickerScreen;
