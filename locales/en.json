@@ -192,6 +192,49 @@
   "meetings": {
     "title": "Meetings",
     "noMeetings": "No meetings",
-    "createMeeting": "Create Meeting"
+    "createMeeting": "Create Meeting",
+    "loading": "Loading...",
+    "error": "Error",
+    "meetingTitle": "Meeting Title",
+    "selectLocation": "Select Location",
+    "selectedLocation": "Selected Location",
+    "confirmLocation": "Confirm Location",
+    "meetingsOnMap": "Meetings on Map"
+  },
+  "tasks": {
+    "taskDetails": "Task Details",
+    "newTask": "New Task",
+    "createTask": "Create Task"
+  },
+  "map": {
+    "clientsOnMap": "Clients on Map",
+    "meetingsOnMap": "Meetings on Map",
+    "selectLocation": "Select Location"
+  },
+  "settings": {
+    "title": "Settings",
+    "reports": "Reports",
+    "auditLog": "Audit Log",
+    "help": "Help and Support",
+    "about": "About App"
+  },
+  "profile": {
+    "qrCard": "QR Card",
+    "editProfile": "Edit Profile"
+  },
+  "campaigns": {
+    "newCampaign": "New Campaign"
+  },
+  "requests": {
+    "newRequest": "New Request"
+  },
+  "reviews": {
+    "newReview": "New Review"
+  },
+  "marketing": {
+    "marketingHub": "Marketing Hub"
+  },
+  "orders": {
+    "editOrder": "Edit Order"
   }
 }

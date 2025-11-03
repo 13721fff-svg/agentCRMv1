@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
 import { useThemedStyles } from '@/lib/tw';
 
 interface ButtonProps {
@@ -11,6 +11,8 @@ interface ButtonProps {
   loading?: boolean;
   fullWidth?: boolean;
   style?: any;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
 }
 
 export default function Button({
@@ -22,6 +24,8 @@ export default function Button({
   loading = false,
   fullWidth = false,
   style,
+  leftIcon,
+  rightIcon,
 }: ButtonProps) {
   const { colors, tw } = useThemedStyles();
 
@@ -75,7 +79,11 @@ export default function Button({
       {loading ? (
         <ActivityIndicator color={variant === 'outline' || variant === 'ghost' ? colors.primary : '#ffffff'} />
       ) : (
-        <Text style={[tw`font-semibold text-base`, { color: getTextColor() }]}>{title}</Text>
+        <View style={tw`flex-row items-center`}>
+          {leftIcon && <View style={tw`mr-2`}>{leftIcon}</View>}
+          <Text style={[tw`font-semibold text-base`, { color: getTextColor() }]}>{title}</Text>
+          {rightIcon && <View style={tw`ml-2`}>{rightIcon}</View>}
+        </View>
       )}
     </TouchableOpacity>
   );

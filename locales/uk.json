@@ -192,6 +192,52 @@
   "meetings": {
     "title": "Зустрічі",
     "noMeetings": "Немає зустрічей",
-    "createMeeting": "Створити зустріч"
+    "createMeeting": "Створити зустріч",
+    "loading": "Завантаження...",
+    "error": "Помилка",
+    "meetingTitle": "Назва зустрічі",
+    "selectLocation": "Вибрати локацію",
+    "selectedLocation": "Обрана локація",
+    "confirmLocation": "Підтвердити локацію",
+    "meetingsOnMap": "Зустрічі на карті"
+  },
+  "tasks": {
+    "taskDetails": "Деталі завдання",
+    "newTask": "Нове завдання",
+    "createTask": "Створити завдання"
+  },
+  "map": {
+    "clientsOnMap": "Клієнти на карті",
+    "meetingsOnMap": "Зустрічі на карті",
+    "selectLocation": "Вибрати локацію"
+  },
+  "settings": {
+    "title": "Налаштування",
+    "reports": "Звіти",
+    "auditLog": "Журнал дій",
+    "help": "Допомога та підтримка",
+    "about": "Про додаток"
+  },
+  "profile": {
+    "qrCard": "QR-візитка",
+    "editProfile": "Редагувати профіль"
+  },
+  "campaigns": {
+    "newCampaign": "Нова кампанія"
+  },
+  "requests": {
+    "newRequest": "Новий запит"
+  },
+  "reviews": {
+    "newReview": "Новий відгук"
+  },
+  "marketing": {
+    "marketingHub": "Маркетинговий хаб"
+  },
+  "orders": {
+    "editOrder": "Редагувати замовлення"
+  },
+  "search": {
+    "title": "Пошук"
   }
 }
