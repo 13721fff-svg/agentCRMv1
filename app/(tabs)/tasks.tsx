@@ -54,15 +54,18 @@ export default function TasksScreen() {
   }, []);
 
   const loadTasks = async () => {
-    if (!user?.org_id) return;
-
     try {
       setLoading(true);
-      const { data, error } = await supabase
+
+      let query = supabase
         .from('tasks')
-        .select('*')
-        .eq('org_id', user.org_id)
-        .order('created_at', { ascending: false });
+        .select('*');
+
+      if (user?.org_id) {
+        query = query.eq('org_id', user.org_id);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       setTasks(data || []);

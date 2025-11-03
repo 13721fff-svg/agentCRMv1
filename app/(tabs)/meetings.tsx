@@ -54,11 +54,15 @@ export default function MeetingsScreen() {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('meetings')
-        .select('*')
-        .eq('org_id', user?.org_id)
-        .order('start_time', { ascending: true });
+        .select('*');
+
+      if (user?.org_id) {
+        query = query.eq('org_id', user.org_id);
+      }
+
+      const { data, error } = await query.order('start_time', { ascending: true });
 
       if (error) throw error;
 
