@@ -11,6 +11,7 @@ import {
   Megaphone,
   UsersRound,
   Target,
+  Package,
 } from 'lucide-react-native';
 import { useAuthStore } from '@/store/authStore';
 
@@ -51,7 +52,7 @@ export default function TabLayout() {
           name="catalog"
           options={{
             title: t('tabs.catalog'),
-            tabBarIcon: ({ size, color }) => <ShoppingBag size={size} color={color} />,
+            tabBarIcon: ({ size, color }) => <Package size={size} color={color} />,
           }}
         />
       )}
@@ -78,7 +79,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="tasks"
           options={{
-            title: 'Завдання',
+            title: t('tabs.tasks'),
             tabBarIcon: ({ size, color }) => <CheckSquare size={size} color={color} />,
           }}
         />
@@ -88,7 +89,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="meetings"
           options={{
-            title: 'Зустрічі',
+            title: t('tabs.meetings'),
             tabBarIcon: ({ size, color }) => <Calendar size={size} color={color} />,
           }}
         />
@@ -98,7 +99,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="campaigns"
           options={{
-            title: 'Кампанії',
+            title: t('tabs.campaigns'),
             tabBarIcon: ({ size, color }) => <Megaphone size={size} color={color} />,
           }}
         />
@@ -108,7 +109,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="team"
           options={{
-            title: 'Команда',
+            title: t('tabs.team'),
             tabBarIcon: ({ size, color }) => <UsersRound size={size} color={color} />,
           }}
         />
