@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, MoreVertical } from 'lucide-react-native';
 import { useThemedStyles } from '@/lib/tw';
 
@@ -13,6 +14,7 @@ interface HeaderProps {
 export default function Header({ title, showBack = false, rightAction }: HeaderProps) {
   const router = useRouter();
   const { colors, tw } = useThemedStyles();
+  const insets = useSafeAreaInsets();
 
   return (
     <View
@@ -22,6 +24,7 @@ export default function Header({ title, showBack = false, rightAction }: HeaderP
           backgroundColor: colors.card,
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
+          paddingTop: insets.top + 12,
         },
       ]}
     >

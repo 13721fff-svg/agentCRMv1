@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Trash2, Calendar, Clock, MapPin, FileText, CheckCircle, XCircle, Edit2, User, Users } from 'lucide-react-native';
 import { useMeetingsStore } from '@/store/meetingsStore';
 import { supabase } from '@/lib/supabase';
@@ -14,7 +13,6 @@ import { MeetingStatus } from '@/types';
 function MeetingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   const [meeting, setMeeting] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [clientName, setClientName] = useState<string | null>(null);
@@ -166,7 +164,7 @@ function MeetingDetailsScreen() {
   }
 
   return (
-    <View style={[tw`flex-1 bg-gray-50`, { paddingTop: insets.top }]}>
+    <View style={tw`flex-1 bg-gray-50`}>
       <View style={tw`bg-white px-4 py-3 flex-row items-center justify-between border-b border-gray-200`}>
         <TouchableOpacity onPress={() => router.back()} style={tw`flex-row items-center flex-1`}>
           <ArrowLeft size={24} color="#374151" />
