@@ -299,6 +299,23 @@ export default function OrderDetailsScreen() {
         </Card>
 
         <Button
+          title="Запланувати зустріч"
+          onPress={() =>
+            router.push({
+              pathname: '/meetings/create',
+              params: {
+                clientId: order?.client_id,
+                orderId: order?.id,
+                clientName: client?.full_name,
+                orderTitle: order?.title,
+              },
+            })
+          }
+          fullWidth
+          style={tw`mb-3`}
+        />
+
+        <Button
           title="Редагувати замовлення"
           onPress={() => router.push(`/orders/edit/${id}`)}
           variant="secondary"

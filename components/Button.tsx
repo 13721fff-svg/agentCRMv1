@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import tw from '@/lib/tw';
+import { useThemedStyles } from '@/lib/tw';
 
 interface ButtonProps {
   title: string;
@@ -23,18 +23,20 @@ export default function Button({
   fullWidth = false,
   style,
 }: ButtonProps) {
+  const { colors, tw } = useThemedStyles();
+
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-primary-600';
+        return { backgroundColor: colors.primary };
       case 'secondary':
-        return 'bg-neutral-600';
+        return { backgroundColor: colors.textSecondary };
       case 'outline':
-        return 'bg-transparent border-2 border-primary-600';
+        return { backgroundColor: 'transparent', borderWidth: 2, borderColor: colors.primary };
       case 'ghost':
-        return 'bg-transparent';
+        return { backgroundColor: 'transparent' };
       default:
-        return 'bg-primary-600';
+        return { backgroundColor: colors.primary };
     }
   };
 
@@ -52,24 +54,28 @@ export default function Button({
   };
 
   const getTextColor = () => {
-    if (variant === 'outline') return 'text-primary-600';
-    if (variant === 'ghost') return 'text-primary-600';
-    return 'text-white';
+    if (variant === 'outline') return colors.primary;
+    if (variant === 'ghost') return colors.primary;
+    return '#ffffff';
   };
 
   return (
     <TouchableOpacity
-      style={[tw`${getVariantStyles()} ${getSizeStyles()} rounded-lg items-center justify-center ${
-        fullWidth ? 'w-full' : ''
-      } ${disabled || loading ? 'opacity-50' : ''}`, style]}
+      style={[
+        tw`${getSizeStyles()} rounded-lg items-center justify-center ${
+          fullWidth ? 'w-full' : ''
+        } ${disabled || loading ? 'opacity-50' : ''}`,
+        getVariantStyles(),
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' || variant === 'ghost' ? '#0284c7' : 'white'} />
+        <ActivityIndicator color={variant === 'outline' || variant === 'ghost' ? colors.primary : '#ffffff'} />
       ) : (
-        <Text style={tw`${getTextColor()} font-semibold text-base`}>{title}</Text>
+        <Text style={[tw`font-semibold text-base`, { color: getTextColor() }]}>{title}</Text>
       )}
     </TouchableOpacity>
   );

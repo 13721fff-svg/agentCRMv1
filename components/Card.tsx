@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import tw from '@/lib/tw';
+import { useThemedStyles } from '@/lib/tw';
 
 interface CardProps {
   children: React.ReactNode;
@@ -9,11 +9,20 @@ interface CardProps {
 }
 
 export default function Card({ children, onPress, style }: CardProps) {
+  const { colors, tw } = useThemedStyles();
   const Component = onPress ? TouchableOpacity : View;
 
   return (
     <Component
-      style={tw.style('bg-white rounded-lg p-4 shadow-sm border border-neutral-200', style)}
+      style={[
+        tw`rounded-lg p-4 shadow-sm`,
+        {
+          backgroundColor: colors.card,
+          borderWidth: 1,
+          borderColor: colors.border,
+        },
+        style,
+      ]}
       onPress={onPress}
       activeOpacity={onPress ? 0.7 : 1}
     >

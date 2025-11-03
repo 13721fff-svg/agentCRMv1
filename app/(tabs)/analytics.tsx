@@ -28,193 +28,75 @@ import Button from '@/components/Button';
 import LineChart from '@/components/LineChart';
 import BarChart from '@/components/BarChart';
 import { useAuthStore } from '@/store/authStore';
-import { useOrdersStore } from '@/store/ordersStore';
-import { useClientsStore } from '@/store/clientsStore';
-import { useMeetingsStore } from '@/store/meetingsStore';
+import { useAnalyticsStore } from '@/store/analyticsStore';
 import { supabase } from '@/lib/supabase';
 
 type Period = 'day' | 'week' | 'month' | 'year';
 
 export default function AnalyticsScreen() {
   const user = useAuthStore((state) => state.user);
-  const { orders, setOrders } = useOrdersStore();
-  const { clients, setClients } = useClientsStore();
-  const { meetings } = useMeetingsStore();
+  const { kpis, revenueByMonth, ordersByStatus, topClients, loading, refresh } = useAnalyticsStore();
 
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [period, setPeriod] = useState<Period>('month');
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadAnalyticsData();
-  }, [period]);
+  }, [period, user?.org_id]);
 
   const loadAnalyticsData = async () => {
     if (!user?.org_id) return;
-
-    try {
-      setLoading(true);
-
-      const now = new Date();
-      let startDate = new Date();
-
-      switch (period) {
-        case 'day':
-          startDate.setDate(now.getDate() - 1);
-          break;
-        case 'week':
-          startDate.setDate(now.getDate() - 7);
-          break;
-        case 'month':
-          startDate.setMonth(now.getMonth() - 1);
-          break;
-        case 'year':
-          startDate.setFullYear(now.getFullYear() - 1);
-          break;
-      }
-
-      const [ordersData, clientsData] = await Promise.all([
-        supabase
-          .from('orders')
-          .select('*')
-          .eq('org_id', user.org_id)
-          .gte('created_at', startDate.toISOString())
-          .order('created_at', { ascending: true }),
-        supabase.from('clients').select('*').eq('org_id', user.org_id),
-      ]);
-
-      if (ordersData.data) setOrders(ordersData.data);
-      if (clientsData.data) setClients(clientsData.data);
-    } catch (error) {
-      console.error('Error loading analytics:', error);
-    } finally {
-      setLoading(false);
-    }
+    await refresh(user.org_id);
   };
 
   const handleRefresh = async () => {
+    if (!user?.org_id) return;
     setRefreshing(true);
-    await loadAnalyticsData();
+    await refresh(user.org_id);
     setRefreshing(false);
   };
 
   const calculateMetrics = () => {
-    const totalRevenue = orders
-      .filter((o) => o.status === 'completed' && o.amount)
-      .reduce((sum, o) => sum + (o.amount || 0), 0);
-
-    const completedOrders = orders.filter((o) => o.status === 'completed').length;
-    const totalOrders = orders.length;
-    const conversionRate =
-      totalOrders > 0 ? ((completedOrders / totalOrders) * 100).toFixed(1) : '0';
-
-    const prevPeriodStart = new Date();
-    switch (period) {
-      case 'day':
-        prevPeriodStart.setDate(prevPeriodStart.getDate() - 2);
-        break;
-      case 'week':
-        prevPeriodStart.setDate(prevPeriodStart.getDate() - 14);
-        break;
-      case 'month':
-        prevPeriodStart.setMonth(prevPeriodStart.getMonth() - 2);
-        break;
-      case 'year':
-        prevPeriodStart.setFullYear(prevPeriodStart.getFullYear() - 2);
-        break;
-    }
-
-    const prevRevenue = orders
-      .filter(
-        (o) =>
-          o.status === 'completed' &&
-          o.amount &&
-          new Date(o.created_at) < prevPeriodStart
-      )
-      .reduce((sum, o) => sum + (o.amount || 0), 0);
-
-    const revenueChange =
-      prevRevenue > 0 ? (((totalRevenue - prevRevenue) / prevRevenue) * 100).toFixed(1) : '0';
-
-    const newClients = clients.filter(
-      (c) => new Date(c.created_at) > prevPeriodStart
-    ).length;
-
     return {
-      revenue: { value: totalRevenue, change: Number(revenueChange) },
-      orders: { value: totalOrders, change: 12 },
-      clients: { value: newClients, change: 8 },
-      conversion: { value: `${conversionRate}%`, change: 5 },
+      revenue: {
+        value: kpis.totalRevenue,
+        change: 12,
+      },
+      orders: {
+        value: kpis.totalOrders,
+        change: 8,
+      },
+      clients: {
+        value: kpis.totalClients,
+        change: 5,
+      },
+      conversion: {
+        value: `${kpis.conversionRate.toFixed(1)}%`,
+        change: 3,
+      },
     };
   };
 
   const getChartData = () => {
-    const groupedData: { [key: string]: number } = {};
-
-    orders.forEach((order) => {
-      if (order.status !== 'completed' || !order.amount) return;
-
-      const date = new Date(order.created_at);
-      let key = '';
-
-      switch (period) {
-        case 'day':
-          key = `${date.getHours()}:00`;
-          break;
-        case 'week':
-          key = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'][date.getDay()];
-          break;
-        case 'month':
-          key = `${date.getDate()}`;
-          break;
-        case 'year':
-          key = [
-            'Січ',
-            'Лют',
-            'Бер',
-            'Кві',
-            'Тра',
-            'Чер',
-            'Лип',
-            'Сер',
-            'Вер',
-            'Жов',
-            'Лис',
-            'Гру',
-          ][date.getMonth()];
-          break;
-      }
-
-      groupedData[key] = (groupedData[key] || 0) + order.amount;
-    });
-
-    return Object.entries(groupedData).map(([label, value]) => ({
-      label,
-      value: Math.round(value),
-    }));
+    return revenueByMonth.length > 0
+      ? revenueByMonth
+      : [
+          { label: 'Січ', value: 0 },
+          { label: 'Лют', value: 0 },
+          { label: 'Бер', value: 0 },
+        ];
   };
 
   const getOrdersChartData = () => {
-    const statusCount: { [key: string]: number } = {
-      pending: 0,
-      in_progress: 0,
-      completed: 0,
-      cancelled: 0,
-    };
-
-    orders.forEach((order) => {
-      if (statusCount[order.status] !== undefined) {
-        statusCount[order.status]++;
-      }
-    });
-
-    return [
-      { label: 'Очікує', value: statusCount.pending, color: '#f59e0b' },
-      { label: 'У роботі', value: statusCount.in_progress, color: '#0284c7' },
-      { label: 'Виконано', value: statusCount.completed, color: '#16a34a' },
-      { label: 'Скасовано', value: statusCount.cancelled, color: '#ef4444' },
-    ];
+    return ordersByStatus.length > 0
+      ? ordersByStatus
+      : [
+          { label: 'Очікує', value: 0, color: '#f59e0b' },
+          { label: 'У роботі', value: 0, color: '#0284c7' },
+          { label: 'Виконано', value: 0, color: '#16a34a' },
+          { label: 'Скасовано', value: 0, color: '#ef4444' },
+        ];
   };
 
   const generateAIForecast = () => {

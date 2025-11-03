@@ -21,9 +21,13 @@ export default function CreateMeetingScreen() {
     latitude?: string;
     longitude?: string;
     address?: string;
+    clientId?: string;
+    orderId?: string;
+    clientName?: string;
+    orderTitle?: string;
   }>();
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(params.orderTitle ? `Зустріч: ${params.orderTitle}` : '');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -31,7 +35,7 @@ export default function CreateMeetingScreen() {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date(Date.now() + 60 * 60 * 1000));
   const [participants, setParticipants] = useState<string[]>([]);
-  const [clientId, setClientId] = useState<string | null>(null);
+  const [clientId, setClientId] = useState<string | null>(params.clientId || null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -41,6 +45,9 @@ export default function CreateMeetingScreen() {
       if (params.address) {
         setLocation(params.address);
       }
+    }
+    if (params.clientId) {
+      setClientId(params.clientId);
     }
   }, [params]);
 
@@ -107,6 +114,19 @@ export default function CreateMeetingScreen() {
       <Header title="Створити зустріч" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4 pb-24`}>
+        {params.clientName && (
+          <View style={tw`bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4`}>
+            <Text style={tw`text-sm font-medium text-blue-900`}>
+              Зустріч з клієнтом: {params.clientName}
+            </Text>
+            {params.orderTitle && (
+              <Text style={tw`text-xs text-blue-700 mt-1`}>
+                Замовлення: {params.orderTitle}
+              </Text>
+            )}
+          </View>
+        )}
+
         <Input
           label="Назва *"
           value={title}
