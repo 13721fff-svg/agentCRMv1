@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronRight,
   MapPin,
+  Search,
 } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
@@ -35,6 +36,13 @@ export default function MoreScreen() {
   };
 
   const menuItems = [
+    {
+      id: 'search',
+      title: 'Глобальний пошук',
+      icon: Search,
+      color: '#3b82f6',
+      onPress: () => router.push('/search'),
+    },
     {
       id: 'profile',
       title: t('profile.title'),

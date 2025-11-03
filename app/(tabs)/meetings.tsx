@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { DateData } from 'react-native-calendars';
-import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X } from 'lucide-react-native';
+import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X, Download } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import EmptyState from '@/components/EmptyState';
@@ -14,6 +14,9 @@ import DayView from '@/components/DayView';
 import { useMeetingsStore } from '@/store/meetingsStore';
 import { useAuthStore } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
+import { realtimeService } from '@/services/realtimeService';
+import { exportService } from '@/services/exportService';
+import { Alert } from 'react-native';
 
 export default function MeetingsScreen() {
   const router = useRouter();
@@ -28,10 +31,23 @@ export default function MeetingsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadMeetings();
   }, []);
+
+  useEffect(() => {
+    if (!user?.org_id) return;
+
+    const unsubscribe = realtimeService.subscribe('meetings', user.org_id, {
+      onInsert: (newMeeting) => setMeetings([newMeeting, ...meetings]),
+      onUpdate: (updated) => setMeetings(meetings.map((m) => (m.id === updated.id ? updated : m))),
+      onDelete: (deleted) => setMeetings(meetings.filter((m) => m.id !== deleted.id)),
+    });
+
+    return () => unsubscribe();
+  }, [user?.org_id, meetings]);
 
   const loadMeetings = async () => {
     try {

@@ -20,6 +20,7 @@ import {
   XCircle,
   AlertCircle,
   FileText,
+  Download,
 } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
@@ -32,6 +33,9 @@ import { useOrdersStore } from '@/store/ordersStore';
 import { useClientsStore } from '@/store/clientsStore';
 import { supabase } from '@/lib/supabase';
 import { OrderStatus } from '@/types';
+import { realtimeService } from '@/services/realtimeService';
+import { exportService } from '@/services/exportService';
+import { Alert } from 'react-native';
 
 const STATUS_CONFIG = {
   draft: {
@@ -88,10 +92,31 @@ export default function OrdersScreen() {
   const [statusFilter, setStatusFilter] = useState<FilterType>('all');
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const [showFilters, setShowFilters] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadOrders();
   }, []);
+
+  useEffect(() => {
+    if (!user?.org_id) return;
+
+    const unsubscribe = realtimeService.subscribe('orders', user.org_id, {
+      onInsert: (newOrder) => {
+        setOrders([newOrder, ...orders]);
+      },
+      onUpdate: (updatedOrder) => {
+        setOrders(orders.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)));
+      },
+      onDelete: (deletedOrder) => {
+        setOrders(orders.filter((o) => o.id !== deletedOrder.id));
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user?.org_id, orders]);
 
   const loadOrders = async () => {
     if (!user?.org_id) return;
@@ -117,6 +142,21 @@ export default function OrdersScreen() {
     setRefreshing(true);
     await loadOrders();
     setRefreshing(false);
+  };
+
+  const handleExport = async () => {
+    try {
+      setExporting(true);
+      const success = await exportService.exportOrdersToCSV(filteredOrders, clients);
+      if (success) {
+        Alert.alert('Успіх', 'Замовлення експортовано');
+      }
+    } catch (error) {
+      console.error('Error exporting:', error);
+      Alert.alert('Помилка', 'Не вдалося експортувати замовлення');
+    } finally {
+      setExporting(false);
+    }
   };
 
   const getClient = (clientId?: string) => {
@@ -192,6 +232,9 @@ export default function OrdersScreen() {
         title={t('orders.title')}
         rightAction={
           <View style={tw`flex-row gap-3`}>
+            <TouchableOpacity onPress={handleExport} disabled={exporting}>
+              <Download size={24} color="#0284c7" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
               <Filter size={24} color="#0284c7" />
             </TouchableOpacity>
