@@ -64,7 +64,8 @@
     "recentOrders": "Останні замовлення",
     "recentClients": "Останні клієнти",
     "reminders": "Нагадування",
-    "stats": "Статистика"
+    "stats": "Статистика",
+    "welcome": "Вітаємо"
   },
   "clients": {
     "title": "Клієнти",
@@ -77,7 +78,9 @@
     "notes": "Нотатки",
     "rating": "Рейтинг",
     "tags": "Теги",
-    "orderHistory": "Історія замовлень"
+    "orderHistory": "Історія замовлень",
+    "noClients": "Немає клієнтів",
+    "noClientsDescription": "Додайте першого клієнта"
   },
   "orders": {
     "title": "Замовлення",
@@ -93,7 +96,9 @@
     "amount": "Сума",
     "dueDate": "Термін",
     "assignedTo": "Виконавець",
-    "description": "Опис"
+    "description": "Опис",
+    "noOrders": "Немає замовлень",
+    "noOrdersDescription": "Створіть перше замовлення"
   },
   "team": {
     "title": "Команда",
@@ -104,7 +109,9 @@
     "admin": "Адміністратор",
     "manager": "Менеджер",
     "staff": "Співробітник",
-    "viewer": "Спостерігач"
+    "viewer": "Спостерігач",
+    "noMembers": "Немає членів команди",
+    "noMembersDescription": "Запросіть першого члена команди"
   },
   "campaigns": {
     "title": "Кампанії",
@@ -116,14 +123,33 @@
     "banner": "Банер",
     "targetAudience": "Цільова аудиторія",
     "startDate": "Дата початку",
-    "endDate": "Дата завершення"
+    "endDate": "Дата завершення",
+    "noCampaigns": "Немає кампаній",
+    "noCampaignsDescription": "Створіть першу кампанію"
   },
   "analytics": {
     "title": "Аналітика",
     "dashboard": "Дашборд",
     "kpi": "KPI",
     "reports": "Звіти",
-    "export": "Експорт"
+    "export": "Експорт",
+    "period": "Період",
+    "day": "День",
+    "week": "Тиждень",
+    "month": "Місяць",
+    "year": "Рік",
+    "mainMetrics": "Основні показники",
+    "revenue": "Дохід",
+    "orders": "Замовлення",
+    "newClients": "Нові клієнти",
+    "conversion": "Конверсія",
+    "revenueDynamics": "Динаміка доходу",
+    "ordersDistribution": "Розподіл замовлень",
+    "aiForecast": "AI-прогноз",
+    "expectedGrowth": "Очікуване зростання:",
+    "exportCSV": "Експорт CSV",
+    "exportPDF": "Експорт PDF",
+    "noData": "Немає даних"
   },
   "profile": {
     "title": "Профіль",
@@ -157,5 +183,15 @@
     "myPrice": "Моя ціна",
     "budget": "Бюджет",
     "location": "Локація"
+  },
+  "tasks": {
+    "title": "Завдання",
+    "noTasks": "Немає завдань",
+    "createTask": "Створити завдання"
+  },
+  "meetings": {
+    "title": "Зустрічі",
+    "noMeetings": "Немає зустрічей",
+    "createMeeting": "Створити зустріч"
   }
 }

@@ -64,7 +64,8 @@
     "recentOrders": "Recent Orders",
     "recentClients": "Recent Clients",
     "reminders": "Reminders",
-    "stats": "Statistics"
+    "stats": "Statistics",
+    "welcome": "Welcome"
   },
   "clients": {
     "title": "Clients",
@@ -77,7 +78,9 @@
     "notes": "Notes",
     "rating": "Rating",
     "tags": "Tags",
-    "orderHistory": "Order History"
+    "orderHistory": "Order History",
+    "noClients": "No clients",
+    "noClientsDescription": "Add your first client"
   },
   "orders": {
     "title": "Orders",
@@ -93,7 +96,9 @@
     "amount": "Amount",
     "dueDate": "Due Date",
     "assignedTo": "Assigned To",
-    "description": "Description"
+    "description": "Description",
+    "noOrders": "No orders",
+    "noOrdersDescription": "Create your first order"
   },
   "team": {
     "title": "Team",
@@ -104,7 +109,9 @@
     "admin": "Administrator",
     "manager": "Manager",
     "staff": "Staff",
-    "viewer": "Viewer"
+    "viewer": "Viewer",
+    "noMembers": "No team members",
+    "noMembersDescription": "Invite your first team member"
   },
   "campaigns": {
     "title": "Campaigns",
@@ -116,14 +123,33 @@
     "banner": "Banner",
     "targetAudience": "Target Audience",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "noCampaigns": "No campaigns",
+    "noCampaignsDescription": "Create your first campaign"
   },
   "analytics": {
     "title": "Analytics",
     "dashboard": "Dashboard",
     "kpi": "KPI",
     "reports": "Reports",
-    "export": "Export"
+    "export": "Export",
+    "period": "Period",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "mainMetrics": "Key Metrics",
+    "revenue": "Revenue",
+    "orders": "Orders",
+    "newClients": "New Clients",
+    "conversion": "Conversion",
+    "revenueDynamics": "Revenue Dynamics",
+    "ordersDistribution": "Orders Distribution",
+    "aiForecast": "AI Forecast",
+    "expectedGrowth": "Expected growth:",
+    "exportCSV": "Export CSV",
+    "exportPDF": "Export PDF",
+    "noData": "No data"
   },
   "profile": {
     "title": "Profile",
@@ -140,7 +166,16 @@
     "categories": "Categories",
     "providers": "Providers",
     "services": "Services",
-    "searchServices": "Search Services"
+    "searchServices": "Search Services",
+    "searchProviders": "Search Providers",
+    "noProviders": "No providers",
+    "noProvidersDescription": "No providers in this category yet",
+    "noAddress": "No address specified",
+    "reviews": "reviews",
+    "category": "Category",
+    "createRequest": "Create Request",
+    "viewReviews": "Reviews",
+    "message": "Message"
   },
   "requests": {
     "title": "Requests",
@@ -148,5 +183,15 @@
     "myPrice": "My Price",
     "budget": "Budget",
     "location": "Location"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "noTasks": "No tasks",
+    "createTask": "Create Task"
+  },
+  "meetings": {
+    "title": "Meetings",
+    "noMeetings": "No meetings",
+    "createMeeting": "Create Meeting"
   }
 }

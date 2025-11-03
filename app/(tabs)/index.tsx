@@ -13,6 +13,7 @@ import {
   Megaphone,
   CheckSquare,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import tw from '@/lib/tw';
 import { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
@@ -29,6 +30,7 @@ import { useDashboardStore } from '@/store/dashboardStore';
 import { supabase } from '@/lib/supabase';
 
 export default function DashboardScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
@@ -254,7 +256,7 @@ export default function DashboardScreen() {
   if (loading) {
     return (
       <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
-        <Header title="Головна" />
+        <Header title={t('home.title')} />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color={colors.primary} />
         </View>

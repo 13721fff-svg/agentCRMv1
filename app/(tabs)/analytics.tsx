@@ -21,6 +21,7 @@ import {
   Sparkles,
   BarChart3,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
@@ -35,6 +36,7 @@ import { exportService } from '@/services/exportService';
 type Period = 'day' | 'week' | 'month' | 'year';
 
 export default function AnalyticsScreen() {
+  const { t } = useTranslation();
   const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { kpis, revenueByMonth, ordersByStatus, topClients, loading, refresh } = useAnalyticsStore();
@@ -152,7 +154,7 @@ export default function AnalyticsScreen() {
   if (loading) {
     return (
       <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
-        <Header title="Аналітика" />
+        <Header title={t('analytics.title')} />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
         </View>
@@ -176,23 +178,23 @@ export default function AnalyticsScreen() {
       >
         <View style={tw`mb-4`}>
           <View style={tw`flex-row items-center justify-between mb-3`}>
-            <Text style={tw`text-lg font-semibold text-gray-900`}>Період</Text>
+            <Text style={tw`text-lg font-semibold text-gray-900`}>{t('analytics.period')}</Text>
             <TouchableOpacity
               onPress={() => handleExport('csv')}
               disabled={exporting}
               style={tw`flex-row items-center bg-blue-50 px-3 py-2 rounded-lg`}
             >
               <Download size={16} color="#0284c7" />
-              <Text style={tw`text-sm font-medium text-blue-700 ml-1`}>Експорт</Text>
+              <Text style={tw`text-sm font-medium text-blue-700 ml-1`}>{t('analytics.export')}</Text>
             </TouchableOpacity>
           </View>
 
           <View style={tw`flex-row gap-2`}>
             {[
-              { id: 'day', label: 'День' },
-              { id: 'week', label: 'Тиждень' },
-              { id: 'month', label: 'Місяць' },
-              { id: 'year', label: 'Рік' },
+              { id: 'day', label: t('analytics.day') },
+              { id: 'week', label: t('analytics.week') },
+              { id: 'month', label: t('analytics.month') },
+              { id: 'year', label: t('analytics.year') },
             ].map((p) => (
               <TouchableOpacity
                 key={p.id}
@@ -215,7 +217,7 @@ export default function AnalyticsScreen() {
 
         <View style={tw`mb-4`}>
           <Text style={tw`text-lg font-semibold text-gray-900 mb-3`}>
-            Основні показники
+            {t('analytics.mainMetrics')}
           </Text>
           <View style={tw`flex-row flex-wrap gap-2`}>
             <View style={tw`flex-1 min-w-36`}>
@@ -245,7 +247,7 @@ export default function AnalyticsScreen() {
                 <Text style={tw`text-2xl font-bold text-gray-900`}>
                   ₴{(metrics.revenue.value / 1000).toFixed(1)}K
                 </Text>
-                <Text style={tw`text-sm text-gray-600`}>Дохід</Text>
+                <Text style={tw`text-sm text-gray-600`}>{t('analytics.revenue')}</Text>
               </Card>
             </View>
 
@@ -267,7 +269,7 @@ export default function AnalyticsScreen() {
                 <Text style={tw`text-2xl font-bold text-gray-900`}>
                   {metrics.orders.value}
                 </Text>
-                <Text style={tw`text-sm text-gray-600`}>Замовлення</Text>
+                <Text style={tw`text-sm text-gray-600`}>{t('analytics.orders')}</Text>
               </Card>
             </View>
 
@@ -289,7 +291,7 @@ export default function AnalyticsScreen() {
                 <Text style={tw`text-2xl font-bold text-gray-900`}>
                   {metrics.clients.value}
                 </Text>
-                <Text style={tw`text-sm text-gray-600`}>Нові клієнти</Text>
+                <Text style={tw`text-sm text-gray-600`}>{t('analytics.newClients')}</Text>
               </Card>
             </View>
 
@@ -311,7 +313,7 @@ export default function AnalyticsScreen() {
                 <Text style={tw`text-2xl font-bold text-gray-900`}>
                   {metrics.conversion.value}
                 </Text>
-                <Text style={tw`text-sm text-gray-600`}>Конверсія</Text>
+                <Text style={tw`text-sm text-gray-600`}>{t('analytics.conversion')}</Text>
               </Card>
             </View>
           </View>
@@ -322,7 +324,7 @@ export default function AnalyticsScreen() {
             <View style={tw`flex-row items-center mb-3`}>
               <Calendar size={20} color="#0284c7" />
               <Text style={tw`text-lg font-semibold text-gray-900 ml-2`}>
-                Динаміка доходу
+                {t('analytics.revenueDynamics')}
               </Text>
             </View>
             <LineChart data={revenueChartData} height={220} color="#0284c7" />
@@ -334,7 +336,7 @@ export default function AnalyticsScreen() {
             <View style={tw`flex-row items-center mb-3`}>
               <BarChart3 size={20} color="#8b5cf6" />
               <Text style={tw`text-lg font-semibold text-gray-900 ml-2`}>
-                Розподіл замовлень
+                {t('analytics.ordersDistribution')}
               </Text>
             </View>
             <BarChart data={ordersChartData} height={220} />
@@ -348,12 +350,12 @@ export default function AnalyticsScreen() {
             </View>
             <View style={tw`flex-1 ml-3`}>
               <Text style={tw`text-base font-semibold text-gray-900 mb-1`}>
-                AI-прогноз
+                {t('analytics.aiForecast')}
               </Text>
               <Text style={tw`text-sm text-gray-700 mb-3`}>{forecast}</Text>
               <View style={tw`flex-row items-center`}>
                 <Text style={tw`text-sm text-gray-600 mr-2`}>
-                  Очікуване зростання:
+                  {t('analytics.expectedGrowth')}
                 </Text>
                 <View
                   style={tw`flex-row items-center px-3 py-1 rounded-full ${
@@ -381,14 +383,14 @@ export default function AnalyticsScreen() {
 
         <View style={tw`flex-row gap-2 mb-4`}>
           <Button
-            title="Експорт CSV"
+            title={t('analytics.exportCSV')}
             onPress={() => handleExport('csv')}
             loading={exporting}
             variant="secondary"
             style={tw`flex-1`}
           />
           <Button
-            title="Експорт PDF"
+            title={t('analytics.exportPDF')}
             onPress={() => handleExport('pdf')}
             loading={exporting}
             variant="secondary"

@@ -23,6 +23,7 @@ import {
   Users,
   TrendingUp,
 } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
@@ -34,6 +35,7 @@ import { supabase } from '@/lib/supabase';
 import { Campaign } from '@/types';
 
 export default function CampaignsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
@@ -175,7 +177,7 @@ export default function CampaignsScreen() {
     return (
       <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header
-          title="Кампанії"
+          title={t('campaigns.title')}
           showBack
           rightAction={
             <TouchableOpacity onPress={() => router.push('/campaigns/new')}>
@@ -215,11 +217,11 @@ export default function CampaignsScreen() {
         >
           <EmptyState
             icon={<Megaphone size={48} color="#9ca3af" />}
-            title="Немає кампаній"
-            description="Створіть першу маркетингову кампанію для залучення клієнтів"
+            title={t('campaigns.noCampaigns')}
+            description={t('campaigns.noCampaignsDescription')}
             action={
               <Button
-                title="Створити кампанію"
+                title={t('campaigns.addCampaign')}
                 onPress={() => router.push('/campaigns/new')}
               />
             }

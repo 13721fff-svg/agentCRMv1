@@ -27,6 +27,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
@@ -40,6 +41,7 @@ import { realtimeService } from '@/services/realtimeService';
 import { exportService } from '@/services/exportService';
 
 export default function TasksScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
@@ -209,7 +211,7 @@ export default function TasksScreen() {
     return (
       <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header
-          title="Завдання"
+          title={t('tasks.title')}
           showBack
           rightAction={
             <TouchableOpacity onPress={() => router.push('/tasks/new')}>
@@ -249,10 +251,10 @@ export default function TasksScreen() {
         >
           <EmptyState
             icon={<CheckSquare size={48} color="#9ca3af" />}
-            title="Немає завдань"
+            title={t('tasks.noTasks')}
             description="Створіть перше завдання для відстеження прогресу"
             action={
-              <Button title="Створити завдання" onPress={() => router.push('/tasks/new')} />
+              <Button title={t('tasks.createTask')} onPress={() => router.push('/tasks/new')} />
             }
           />
         </ScrollView>

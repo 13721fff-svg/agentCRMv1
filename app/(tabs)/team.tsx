@@ -32,8 +32,8 @@ export default function TeamScreen() {
         {members.length === 0 ? (
           <EmptyState
             icon={<User size={48} color="#a3a3a3" />}
-            title="Немає членів команди"
-            description="Додайте членів команди для спільної роботи"
+            title={t('team.noMembers')}
+            description={t('team.noMembersDescription')}
             action={
               <Button
                 title={t('team.addMember')}

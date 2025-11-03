@@ -259,8 +259,8 @@ export default function OrdersScreen() {
         >
           <EmptyState
             icon={<Package size={48} color="#9ca3af" />}
-            title="Немає замовлень"
-            description="Створіть перше замовлення для початку роботи"
+            title={t('orders.noOrders')}
+            description={t('orders.noOrdersDescription')}
             action={
               <Button
                 title={t('orders.addOrder')}

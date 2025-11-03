@@ -145,8 +145,8 @@ export default function ClientsScreen() {
         >
           <EmptyState
             icon={<Users size={48} color="#9ca3af" />}
-            title="Немає клієнтів"
-            description="Додайте першого клієнта для початку роботи"
+            title={t('clients.noClients')}
+            description={t('clients.noClientsDescription')}
             action={
               <Button
                 title={t('clients.addClient')}

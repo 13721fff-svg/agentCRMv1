@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput 
 import { useRouter } from 'expo-router';
 import { DateData } from 'react-native-calendars';
 import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X, Download } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import EmptyState from '@/components/EmptyState';
@@ -19,6 +20,7 @@ import { exportService } from '@/services/exportService';
 import { Alert } from 'react-native';
 
 export default function MeetingsScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
@@ -355,7 +357,7 @@ export default function MeetingsScreen() {
   if (loading) {
     return (
       <View style={tw`flex-1 bg-neutral-50`}>
-        <Header title="Зустрічі" showBack />
+        <Header title={t('meetings.title')} showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
         </View>
@@ -366,7 +368,7 @@ export default function MeetingsScreen() {
   return (
     <View style={tw`flex-1 bg-neutral-50`}>
       <Header
-        title="Зустрічі"
+        title={t('meetings.title')}
         showBack
         rightAction={
           <View style={tw`flex-row items-center gap-3`}>
@@ -484,11 +486,11 @@ export default function MeetingsScreen() {
         <ScrollView contentContainerStyle={tw`flex-1 p-4`}>
           <EmptyState
             icon={<Calendar size={48} color="#a3a3a3" />}
-            title="Немає зустрічей"
+            title={t('meetings.noMeetings')}
             description="Створіть першу зустріч для планування"
             action={
               <Button
-                title="Створити зустріч"
+                title={t('meetings.createMeeting')}
                 onPress={() => router.push('/meetings/create')}
               />
             }
