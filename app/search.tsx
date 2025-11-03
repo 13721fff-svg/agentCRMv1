@@ -18,7 +18,7 @@ import {
   X,
   ArrowRight,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import EmptyState from '@/components/EmptyState';
@@ -35,6 +35,7 @@ interface SearchResult {
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { user } = useAuthStore();
 
   const [query, setQuery] = useState('');
@@ -222,7 +223,7 @@ export default function SearchScreen() {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Пошук" showBack />
 
       <View style={tw`p-4`}>

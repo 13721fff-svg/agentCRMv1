@@ -21,7 +21,7 @@ import {
   Sparkles,
   BarChart3,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -35,6 +35,7 @@ import { exportService } from '@/services/exportService';
 type Period = 'day' | 'week' | 'month' | 'year';
 
 export default function AnalyticsScreen() {
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { kpis, revenueByMonth, ordersByStatus, topClients, loading, refresh } = useAnalyticsStore();
 
@@ -150,7 +151,7 @@ export default function AnalyticsScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Аналітика" />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -160,7 +161,7 @@ export default function AnalyticsScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Аналітика" />
 
       <ScrollView

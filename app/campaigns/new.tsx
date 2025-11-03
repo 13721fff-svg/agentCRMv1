@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Megaphone, Mail, MessageSquare, Image as ImageIcon } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Input from '@/components/Input';
@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function NewCampaignScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { addCampaign } = useCampaignsStore();
   const { clients } = useClientsStore();
@@ -95,7 +96,7 @@ export default function NewCampaignScreen() {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Нова кампанія" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

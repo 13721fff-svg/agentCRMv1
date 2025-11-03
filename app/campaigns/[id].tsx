@@ -27,7 +27,7 @@ import {
   MousePointer,
   BarChart3,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -38,6 +38,7 @@ import { Campaign } from '@/types';
 
 export default function CampaignDetailsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { campaigns, updateCampaign, deleteCampaign: deleteCampaignFromStore } =
@@ -342,7 +343,7 @@ export default function CampaignDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Завантаження..." showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -353,7 +354,7 @@ export default function CampaignDetailsScreen() {
 
   if (!campaign) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Помилка" showBack />
         <View style={tw`flex-1 items-center justify-center p-4`}>
           <Megaphone size={48} color="#9ca3af" />
@@ -366,7 +367,7 @@ export default function CampaignDetailsScreen() {
   const metrics = campaign.metrics as any;
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="Деталі кампанії"
         showBack

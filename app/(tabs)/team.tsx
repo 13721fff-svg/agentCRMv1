@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Plus, User, Mail } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import EmptyState from '@/components/EmptyState';
@@ -12,6 +12,7 @@ import Button from '@/components/Button';
 export default function TeamScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { colors } = useThemedStyles();
 
   const members = [];
 

@@ -19,7 +19,7 @@ import {
   Smartphone,
   DollarSign,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -29,6 +29,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { t, i18n } = useTranslation();
   const { theme, language, setTheme, setLanguage } = useAppStore();
   const { user, logout } = useAuthStore();
@@ -185,7 +186,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Налаштування" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

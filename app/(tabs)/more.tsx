@@ -14,7 +14,7 @@ import {
   MapPin,
   Search,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import { useAuthStore } from '@/store/authStore';
@@ -23,6 +23,7 @@ import { authService } from '@/services/authService';
 export default function MoreScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { user, logout } = useAuthStore();
 
   const handleLogout = async () => {

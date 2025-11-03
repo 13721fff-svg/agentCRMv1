@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Input from '@/components/Input';
@@ -13,6 +13,7 @@ import { Client } from '@/types';
 
 export default function EditClientScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { clients, updateClient } = useClientsStore();
@@ -116,7 +117,7 @@ export default function EditClientScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Завантаження..." showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -127,7 +128,7 @@ export default function EditClientScreen() {
 
   if (!client) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Помилка" showBack />
         <View style={tw`flex-1 items-center justify-center p-4`}>
           <Text style={tw`text-lg text-gray-600`}>Клієнта не знайдено</Text>
@@ -137,7 +138,7 @@ export default function EditClientScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Редагувати клієнта" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

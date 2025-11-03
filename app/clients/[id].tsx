@@ -23,7 +23,7 @@ import {
   MessageSquare,
   ChevronRight,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -36,6 +36,7 @@ import { Client } from '@/types';
 
 export default function ClientDetailsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { clients, deleteClient: deleteClientFromStore } = useClientsStore();
@@ -144,7 +145,7 @@ export default function ClientDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Завантаження..." showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -155,7 +156,7 @@ export default function ClientDetailsScreen() {
 
   if (!client) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Помилка" showBack />
         <View style={tw`flex-1 items-center justify-center p-4`}>
           <User size={48} color="#9ca3af" />
@@ -166,7 +167,7 @@ export default function ClientDetailsScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="Деталі клієнта"
         showBack

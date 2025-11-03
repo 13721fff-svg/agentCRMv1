@@ -22,7 +22,7 @@ import {
   FileText,
   Download,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import EmptyState from '@/components/EmptyState';
@@ -82,6 +82,7 @@ type DateFilter = 'all' | 'today' | 'week' | 'month';
 export default function OrdersScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { orders, setOrders } = useOrdersStore();
   const { clients } = useClientsStore();
@@ -210,7 +211,7 @@ export default function OrdersScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header
           title={t('orders.title')}
           rightAction={
@@ -227,7 +228,7 @@ export default function OrdersScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title={t('orders.title')}
         rightAction={

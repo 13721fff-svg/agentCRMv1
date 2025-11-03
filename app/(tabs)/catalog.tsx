@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-nativ
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Search, Wrench, Home as HomeIcon, Car, Paintbrush, Scissors, Camera, Plus } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -20,6 +20,7 @@ const categories = [
 export default function CatalogScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const [searchQuery, setSearchQuery] = useState('');
 
   return (

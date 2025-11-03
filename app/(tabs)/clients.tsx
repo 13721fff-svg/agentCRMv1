@@ -10,7 +10,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Plus, Users, MapPin, Phone, Mail, ChevronRight, Search, Download } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import EmptyState from '@/components/EmptyState';
@@ -25,6 +25,7 @@ import { Alert } from 'react-native';
 export default function ClientsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { clients, setClients } = useClientsStore();
 
@@ -88,7 +89,7 @@ export default function ClientsScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header
           title={t('clients.title')}
           rightAction={

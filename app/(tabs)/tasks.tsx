@@ -27,7 +27,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -41,6 +41,7 @@ import { exportService } from '@/services/exportService';
 
 export default function TasksScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { tasks, setTasks, updateTask } = useTasksStore();
 
@@ -203,7 +204,7 @@ export default function TasksScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header
           title="Завдання"
           showBack
@@ -221,7 +222,7 @@ export default function TasksScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="Завдання"
         showBack

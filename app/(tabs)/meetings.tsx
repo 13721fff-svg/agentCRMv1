@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput 
 import { useRouter } from 'expo-router';
 import { DateData } from 'react-native-calendars';
 import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X, Download } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import EmptyState from '@/components/EmptyState';
 import Button from '@/components/Button';
@@ -20,6 +20,7 @@ import { Alert } from 'react-native';
 
 export default function MeetingsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { meetings, setMeetings } = useMeetingsStore();
 

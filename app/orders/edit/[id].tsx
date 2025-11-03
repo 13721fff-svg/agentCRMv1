@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Input from '@/components/Input';
@@ -23,6 +23,7 @@ const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
 
 export default function EditOrderScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { orders, updateOrder } = useOrdersStore();
@@ -133,7 +134,7 @@ export default function EditOrderScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Завантаження..." showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -144,7 +145,7 @@ export default function EditOrderScreen() {
 
   if (!order) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Помилка" showBack />
         <View style={tw`flex-1 items-center justify-center p-4`}>
           <Text style={tw`text-lg text-gray-600`}>Замовлення не знайдено</Text>
@@ -154,7 +155,7 @@ export default function EditOrderScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Редагувати замовлення" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

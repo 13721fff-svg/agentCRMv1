@@ -26,7 +26,7 @@ import {
   Crown,
   Award,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -78,6 +78,7 @@ const ROLE_CONFIG = {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { user, setUser } = useAuthStore();
   const [uploading, setUploading] = useState(false);
 
@@ -200,7 +201,7 @@ export default function ProfileScreen() {
 
   if (!user) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Профіль" showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <Text style={tw`text-gray-600`}>Завантаження...</Text>
@@ -210,7 +211,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="Профіль"
         showBack

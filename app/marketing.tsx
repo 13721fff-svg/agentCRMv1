@@ -20,7 +20,7 @@ import {
   Search,
   Filter,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -30,6 +30,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function MarketingHubScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { profiles, banners, setProfiles, setBanners, promoteProfile } =
     useMarketingStore();
@@ -130,7 +131,7 @@ export default function MarketingHubScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Marketing Hub" showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -140,7 +141,7 @@ export default function MarketingHubScreen() {
   }
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Marketing Hub" showBack />
 
       <ScrollView

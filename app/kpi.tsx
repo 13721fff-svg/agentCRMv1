@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Plus, TrendingUp, Target } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import EmptyState from '@/components/EmptyState';
@@ -10,11 +10,12 @@ import Button from '@/components/Button';
 
 export default function KPIScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
 
   const kpis = [];
 
   return (
-    <View style={tw`flex-1 bg-neutral-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="KPI та Плани"
         showBack

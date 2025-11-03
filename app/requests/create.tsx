@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ShoppingBag, ChevronRight } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Input from '@/components/Input';
@@ -12,6 +12,7 @@ import { supabase } from '@/lib/supabase';
 
 export default function CreateRequestScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { user } = useAuthStore();
 
   const [title, setTitle] = useState('');
@@ -68,7 +69,7 @@ export default function CreateRequestScreen() {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Новий запит" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Flag, Clock, User } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Input from '@/components/Input';
@@ -16,6 +16,7 @@ import { notificationService } from '@/services/notificationService';
 
 export default function NewTaskScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const user = useAuthStore((state) => state.user);
   const { addTask } = useTasksStore();
   const { members } = useTeamStore();
@@ -91,7 +92,7 @@ export default function NewTaskScreen() {
   };
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header title="Нове завдання" showBack />
 
       <ScrollView contentContainerStyle={tw`p-4`}>

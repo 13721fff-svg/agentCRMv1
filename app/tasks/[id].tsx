@@ -21,7 +21,7 @@ import {
   Play,
   XCircle,
 } from 'lucide-react-native';
-import tw from '@/lib/tw';
+import tw, { useThemedStyles } from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
@@ -33,6 +33,7 @@ import { Task } from '@/types';
 
 export default function TaskDetailsScreen() {
   const router = useRouter();
+  const { colors } = useThemedStyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = useAuthStore((state) => state.user);
   const { tasks, updateTask, deleteTask: deleteTaskFromStore } = useTasksStore();
@@ -193,7 +194,7 @@ export default function TaskDetailsScreen() {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Завантаження..." showBack />
         <View style={tw`flex-1 items-center justify-center`}>
           <ActivityIndicator size="large" color="#0284c7" />
@@ -204,7 +205,7 @@ export default function TaskDetailsScreen() {
 
   if (!task) {
     return (
-      <View style={tw`flex-1 bg-gray-50`}>
+      <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
         <Header title="Помилка" showBack />
         <View style={tw`flex-1 items-center justify-center p-4`}>
           <CheckSquare size={48} color="#9ca3af" />
@@ -218,7 +219,7 @@ export default function TaskDetailsScreen() {
   const assignedMember = getAssignedMember();
 
   return (
-    <View style={tw`flex-1 bg-gray-50`}>
+    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <Header
         title="Деталі завдання"
         showBack
