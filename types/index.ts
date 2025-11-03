@@ -8,6 +8,16 @@ export type RequestStatus = 'open' | 'quoted' | 'accepted' | 'rejected' | 'expir
 
 export type CampaignStatus = 'draft' | 'scheduled' | 'active' | 'paused' | 'completed' | 'cancelled';
 
+export type PaymentMethodType = 'card' | 'bank_account' | 'wallet';
+
+export type CardBrand = 'visa' | 'mastercard' | 'amex' | 'maestro';
+
+export type TransactionStatus = 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded';
+
+export type TransactionType = 'payment' | 'refund' | 'subscription';
+
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+
 export interface User {
   id: string;
   email: string;
@@ -184,4 +194,72 @@ export interface Review {
   rating: number;
   comment?: string;
   created_at: string;
+}
+
+export interface PaymentProvider {
+  id: string;
+  name: string;
+  provider_type: string;
+  is_active: boolean;
+  is_test_mode: boolean;
+  config: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaymentMethod {
+  id: string;
+  user_id: string;
+  org_id?: string;
+  provider_id?: string;
+  method_type: PaymentMethodType;
+  card_brand?: CardBrand;
+  last_four?: string;
+  expiry_month?: number;
+  expiry_year?: number;
+  cardholder_name?: string;
+  is_default: boolean;
+  provider_token?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Transaction {
+  id: string;
+  user_id: string;
+  org_id?: string;
+  payment_method_id?: string;
+  provider_id?: string;
+  order_id?: string;
+  amount: number;
+  currency: string;
+  status: TransactionStatus;
+  transaction_type: TransactionType;
+  description?: string;
+  provider_transaction_id?: string;
+  provider_response?: Record<string, any>;
+  metadata?: Record<string, any>;
+  processed_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Invoice {
+  id: string;
+  user_id: string;
+  org_id?: string;
+  transaction_id?: string;
+  order_id?: string;
+  invoice_number: string;
+  amount: number;
+  currency: string;
+  status: InvoiceStatus;
+  due_date?: string;
+  paid_at?: string;
+  invoice_data: Record<string, any>;
+  pdf_url?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
 }

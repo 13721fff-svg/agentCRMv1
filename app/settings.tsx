@@ -17,6 +17,7 @@ import {
   Link,
   Sun,
   Smartphone,
+  DollarSign,
 } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
@@ -284,19 +285,40 @@ export default function SettingsScreen() {
 
         <Card style={tw`mb-4`}>
           <TouchableOpacity
-            onPress={() => Alert.alert('Інтеграції', 'Управління інтеграціями буде доступне в наступній версії')}
+            onPress={() => router.push('/integrations/payments')}
             activeOpacity={0.7}
-            style={tw`flex-row items-center justify-between`}
+            style={tw`flex-row items-center justify-between py-3 border-b border-gray-100`}
           >
             <View style={tw`flex-row items-center flex-1`}>
               <View
                 style={tw`w-10 h-10 rounded-full bg-green-100 items-center justify-center mr-3`}
               >
-                <Link size={20} color="#16a34a" />
+                <DollarSign size={20} color="#16a34a" />
               </View>
               <View style={tw`flex-1`}>
                 <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
-                  Підключені сервіси
+                  Платежі та оплата
+                </Text>
+                <Text style={tw`text-sm text-gray-600`}>LiqPay інтеграція</Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color="#9ca3af" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => Alert.alert('Інтеграції', 'Управління інтеграціями буде доступне в наступній версії')}
+            activeOpacity={0.7}
+            style={tw`flex-row items-center justify-between py-3`}
+          >
+            <View style={tw`flex-row items-center flex-1`}>
+              <View
+                style={tw`w-10 h-10 rounded-full bg-blue-100 items-center justify-center mr-3`}
+              >
+                <Link size={20} color="#0284c7" />
+              </View>
+              <View style={tw`flex-1`}>
+                <Text style={tw`text-base font-medium text-gray-900 mb-1`}>
+                  Інші сервіси
                 </Text>
                 <Text style={tw`text-sm text-gray-600`}>Google, Telegram</Text>
               </View>
