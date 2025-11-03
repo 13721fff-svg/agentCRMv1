@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Search, Wrench, Home as HomeIcon, Car, Paintbrush, Scissors, Camera } from 'lucide-react-native';
+import { Search, Wrench, Home as HomeIcon, Car, Paintbrush, Scissors, Camera, Plus } from 'lucide-react-native';
 import tw from '@/lib/tw';
 import Header from '@/components/Header';
 import Card from '@/components/Card';
+import Button from '@/components/Button';
 
 const categories = [
   { id: '1', name: 'Ремонт', name_uk: 'Ремонт', icon: Wrench, color: '#0ea5e9' },
@@ -17,11 +19,19 @@ const categories = [
 
 export default function CatalogScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <View style={tw`flex-1 bg-neutral-50`}>
-      <Header title={t('catalog.title')} />
+      <Header
+        title={t('catalog.title')}
+        rightAction={
+          <TouchableOpacity onPress={() => router.push('/requests/create')}>
+            <Plus size={24} color="#0284c7" />
+          </TouchableOpacity>
+        }
+      />
 
       <ScrollView contentContainerStyle={tw`p-4`}>
         <View style={tw`mb-6`}>
