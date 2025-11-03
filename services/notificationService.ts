@@ -83,6 +83,7 @@ class NotificationService {
     title: string;
     startTime: string;
     location?: string;
+    minutesBefore?: number;
   }): Promise<string | null> {
     if (Platform.OS === 'web') {
       return null;
@@ -99,16 +100,19 @@ class NotificationService {
       const meetingDate = new Date(meeting.startTime);
       const now = new Date();
 
-      const reminderDate = new Date(meetingDate.getTime() - settings.reminderTime * 60 * 1000);
+      const minutesBeforeReminder = meeting.minutesBefore !== undefined ? meeting.minutesBefore : settings.reminderTime;
+      const reminderDate = new Date(meetingDate.getTime() - minutesBeforeReminder * 60 * 1000);
 
       if (reminderDate <= now) {
         return null;
       }
 
+      const timeText = minutesBeforeReminder === 0 ? 'зараз' : `через ${minutesBeforeReminder} хв`;
+
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
           title: '🗓️ Зустріч незабаром',
-          body: `${meeting.title}${meeting.location ? ` в ${meeting.location}` : ''} через ${settings.reminderTime} хв`,
+          body: `${meeting.title}${meeting.location ? ` в ${meeting.location}` : ''} ${timeText}`,
           data: { meetingId: meeting.id, type: 'meeting' },
           sound: true,
         },

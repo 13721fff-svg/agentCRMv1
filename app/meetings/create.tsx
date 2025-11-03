@@ -9,10 +9,13 @@ import Button from '@/components/Button';
 import DateTimePickerComponent from '@/components/DateTimePicker';
 import ParticipantsSelector from '@/components/ParticipantsSelector';
 import ClientSelector from '@/components/ClientSelector';
+import RecurrenceSelector from '@/components/RecurrenceSelector';
 import { useMeetingsStore } from '@/store/meetingsStore';
+import { RecurrenceFrequency } from '@/types';
 import { useAuthStore } from '@/store/authStore';
 import { supabase } from '@/lib/supabase';
 import { notificationService } from '@/services/notificationService';
+import { generateRecurringInstances, checkMeetingConflict, getReminderLabel } from '@/lib/recurringUtils';
 
 export default function CreateMeetingScreen() {
   const router = useRouter();
@@ -37,6 +40,9 @@ export default function CreateMeetingScreen() {
   const [endTime, setEndTime] = useState(new Date(Date.now() + 60 * 60 * 1000));
   const [participants, setParticipants] = useState<string[]>([]);
   const [clientId, setClientId] = useState<string | null>(params.clientId || null);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState<RecurrenceFrequency>('none');
+  const [recurrenceEndDate, setRecurrenceEndDate] = useState<Date | null>(null);
+  const [reminderMinutes, setReminderMinutes] = useState(15);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -63,8 +69,38 @@ export default function CreateMeetingScreen() {
       return;
     }
 
+    if (recurrenceFrequency !== 'none' && !recurrenceEndDate) {
+      Alert.alert('Помилка', 'Вкажіть дату закінчення повторення');
+      return;
+    }
+
     try {
       setLoading(true);
+
+      const { data: existingMeetings } = await supabase
+        .from('meetings')
+        .select('id, start_time, end_time, title')
+        .eq('org_id', user?.org_id)
+        .eq('status', 'scheduled')
+        .or(`start_time.gte.${startTime.toISOString()},start_time.lte.${endTime.toISOString()}`);
+
+      const conflict = checkMeetingConflict(startTime, endTime, existingMeetings || []);
+      if (conflict.hasConflict && conflict.conflictingMeeting) {
+        const shouldContinue = await new Promise<boolean>((resolve) => {
+          Alert.alert(
+            '⚠️ Конфлікт часу',
+            `Зустріч перетинається з іншою подією:\n"${conflict.conflictingMeeting?.title || 'Зустріч'}"\n\nПродовжити?`,
+            [
+              { text: 'Скасувати', onPress: () => resolve(false), style: 'cancel' },
+              { text: 'Продовжити', onPress: () => resolve(true) },
+            ]
+          );
+        });
+        if (!shouldContinue) {
+          setLoading(false);
+          return;
+        }
+      }
 
       const meetingData = {
         org_id: user?.org_id,
@@ -79,6 +115,8 @@ export default function CreateMeetingScreen() {
         participants,
         client_id: clientId,
         created_by: user?.id,
+        recurrence_frequency: recurrenceFrequency,
+        recurrence_end_date: recurrenceEndDate?.toISOString() || null,
       };
 
       const { data, error } = await supabase
@@ -89,6 +127,43 @@ export default function CreateMeetingScreen() {
 
       if (error) throw error;
 
+      let totalCreated = 1;
+
+      if (recurrenceFrequency !== 'none' && recurrenceEndDate) {
+        const instances = generateRecurringInstances(
+          { ...meetingData, parent_meeting_id: data.id },
+          recurrenceFrequency,
+          recurrenceEndDate
+        );
+
+        if (instances.length > 0) {
+          const instancesWithParent = instances.map((inst) => ({
+            ...inst,
+            parent_meeting_id: data.id,
+          }));
+
+          const { data: createdInstances, error: instancesError } = await supabase
+            .from('meetings')
+            .insert(instancesWithParent)
+            .select();
+
+          if (instancesError) throw instancesError;
+          totalCreated += createdInstances?.length || 0;
+
+          if (createdInstances) {
+            for (const instance of createdInstances) {
+              await notificationService.scheduleMeetingNotification({
+                id: instance.id,
+                title: instance.title,
+                startTime: instance.start_time,
+                location: instance.location || undefined,
+                minutesBefore: reminderMinutes,
+              });
+            }
+          }
+        }
+      }
+
       addMeeting(data);
 
       await notificationService.scheduleMeetingNotification({
@@ -96,9 +171,14 @@ export default function CreateMeetingScreen() {
         title: data.title,
         startTime: data.start_time,
         location: data.location || undefined,
+        minutesBefore: reminderMinutes,
       });
 
-      Alert.alert('Успіх', 'Зустріч створено!', [
+      const message = recurrenceFrequency !== 'none'
+        ? `Створено ${totalCreated} зустрічей (${totalCreated - 1} повторень)`
+        : 'Зустріч створено!';
+
+      Alert.alert('Успіх', message, [
         {
           text: 'OK',
           onPress: () => {
@@ -178,6 +258,42 @@ export default function CreateMeetingScreen() {
           selectedParticipants={participants}
           onParticipantsChange={setParticipants}
         />
+
+        <RecurrenceSelector
+          recurrenceFrequency={recurrenceFrequency}
+          recurrenceEndDate={recurrenceEndDate}
+          onRecurrenceChange={setRecurrenceFrequency}
+          onEndDateChange={setRecurrenceEndDate}
+        />
+
+        <View style={tw`mb-4`}>
+          <Text style={tw`text-sm font-medium text-gray-700 mb-2`}>
+            Нагадати за
+          </Text>
+          <View style={tw`flex-row flex-wrap gap-2`}>
+            {[0, 5, 10, 15, 30, 60].map((minutes) => (
+              <TouchableOpacity
+                key={minutes}
+                onPress={() => setReminderMinutes(minutes)}
+                style={[
+                  tw`px-4 py-2 rounded-lg border`,
+                  reminderMinutes === minutes
+                    ? tw`bg-blue-600 border-blue-600`
+                    : tw`bg-white border-gray-300`,
+                ]}
+              >
+                <Text
+                  style={[
+                    tw`text-sm font-medium`,
+                    reminderMinutes === minutes ? tw`text-white` : tw`text-gray-700`,
+                  ]}
+                >
+                  {getReminderLabel(minutes)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
         <View style={tw`mb-4`}>
           <Text style={tw`text-sm font-medium text-gray-700 mb-2`}>
