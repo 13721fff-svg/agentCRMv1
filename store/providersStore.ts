@@ -49,8 +49,9 @@ export const useProvidersStore = create<ProvidersState>((set, get) => ({
     try {
       set({ loading: true, error: null });
       const { data, error } = await supabase
-        .from('provider_categories')
+        .from('categories')
         .select('*')
+        .is('parent_id', null)
         .order('name');
 
       if (error) throw error;

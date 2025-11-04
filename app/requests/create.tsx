@@ -27,7 +27,11 @@ export default function CreateRequestScreen() {
   }, []);
 
   const loadCategories = async () => {
-    const { data } = await supabase.from('categories').select('*').order('name');
+    const { data } = await supabase
+      .from('categories')
+      .select('*')
+      .is('parent_id', null)
+      .order('name');
     if (data) setCategories(data);
   };
 
@@ -100,7 +104,7 @@ export default function CreateRequestScreen() {
                       categoryId === cat.id ? 'text-white' : 'text-gray-900'
                     }`}
                   >
-                    {cat.name}
+                    {cat.name_uk || cat.name}
                   </Text>
                 </TouchableOpacity>
               ))}

@@ -23,10 +23,11 @@ export default function CatalogScreen() {
   const router = useRouter();
   const { colors } = useThemedStyles();
   const [searchQuery, setSearchQuery] = useState('');
-  const { categories, fetchCategories } = useProvidersStore();
+  const { categories, providers, fetchCategories, fetchProviders, loading } = useProvidersStore();
 
   useEffect(() => {
     fetchCategories();
+    fetchProviders();
   }, []);
 
   return (
@@ -90,11 +91,47 @@ export default function CatalogScreen() {
           <Text style={tw`text-lg font-semibold text-neutral-900 mb-3`}>
             {t('catalog.providers')}
           </Text>
-          <Card>
-            <Text style={tw`text-neutral-600 text-center py-4`}>
-              Немає доступних виконавців
-            </Text>
-          </Card>
+          {loading ? (
+            <Card>
+              <Text style={tw`text-neutral-600 text-center py-4`}>
+                Завантаження...
+              </Text>
+            </Card>
+          ) : providers.length === 0 ? (
+            <Card>
+              <Text style={tw`text-neutral-600 text-center py-4`}>
+                Немає доступних виконавців
+              </Text>
+            </Card>
+          ) : (
+            providers.slice(0, 5).map((provider) => (
+              <TouchableOpacity
+                key={provider.id}
+                onPress={() => router.push(`/profile/provider/${provider.id}`)}
+              >
+                <Card style={tw`mb-3`}>
+                  <View style={tw`flex-row items-start justify-between`}>
+                    <View style={tw`flex-1`}>
+                      <Text style={tw`text-base font-semibold text-neutral-900 mb-1`}>
+                        {provider.name}
+                      </Text>
+                      <Text style={tw`text-sm text-neutral-600 mb-2`} numberOfLines={2}>
+                        {provider.description}
+                      </Text>
+                      <View style={tw`flex-row items-center`}>
+                        <Text style={tw`text-sm text-amber-600 font-medium`}>
+                          ★ {provider.rating.toFixed(1)}
+                        </Text>
+                        <Text style={tw`text-xs text-neutral-500 ml-2`}>
+                          ({provider.reviews_count} {t('catalog.reviews')})
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))
+          )}
         </View>
       </ScrollView>
     </View>
