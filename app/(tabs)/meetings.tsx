@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { DateData } from 'react-native-calendars';
 import { Plus, Calendar, List, Clock, MapPin, CheckCircle, XCircle, Search, Filter, X, Download } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import tw, { useThemedStyles } from '@/lib/tw';
@@ -76,7 +75,7 @@ export default function MeetingsScreen() {
     }
   };
 
-  const handleDayPress = (date: DateData) => {
+  const handleDayPress = (date: { dateString: string }) => {
     setSelectedDate(date.dateString);
   };
 
